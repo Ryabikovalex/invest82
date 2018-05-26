@@ -1,4 +1,5 @@
 <?php
+//Проверка успешного завершенного действия
 if (isset($success))
 {
     if (is_object($success) == true)
@@ -9,19 +10,56 @@ if (isset($success))
     }
 }
 ?>
-<table class="manager">
-    <?php/* list( $cat, $subcat) = $stat['categories'];var_dump($cat);?>
-    <tr>
-        <?php for ($i=0; $i < sizeof($cat); $i++){
-            list($id, $name, $translit, $is_enabled, $level, $parent) = $cat[$i];
-        ?>
-        <th colspan="4"><h5><?=$name?></h5></th>
+<ul>
+    <li>
+        <a href="/manager/cities">Show Cities</a>
+    </li>
+    <li>
+        <a href="/manager/new/?t=cities">New city</a>
+    </li>
+    <li>
+        <a href="/manager/products">Show products</a>
+    </li>
+    <li>
+        <a href="/manager/new/?t=products">New product</a>
+    </li>
+    <li>
+        <a href="/manager/show/?t=customers">Показать клиентов</a>
+    </li>
+</ul>
 
-    </tr>
-        <?php}*/?>
-    <tr>
+<!--Вывод категорий и их подкатегория -->
+<?php list( $cat, $subcat) = array_values($stat['categories']);
+foreach ($cat as $k => $val) {
+    echo '<table style="display: inline-block" border="1">';
+    list($id, $name, $translit, $is_enabled, ,) = array_values($val);
+    $is = $is_enabled == 1 ? 'Отключить' : 'Включить';
+    echo '
+<tr>
+    <th>'.$id.'</th>
+    <th><h3>' . $name . '</h3></th>
+    <th>'.$translit.'</th>
+    <th><a href="/manager/?action=toggle&cat='.$id.'">'.$is.'</a></th>
+</tr>
+';
+    //Начало подкатегорий
+    echo '<tr>
+    <th>id</th><th>Название подкатегорий</th><th>Translit</th><th>State</th>
+</tr>';
+    for ($i=0; $i < count($subcat[$k]); $i++)
+    {
+        list( $id, $name, $translit, $is_enabled, , ) = array_values($subcat[$k][$i]);
+        $is = $is_enabled == 1 ? 'Отключить' : 'Включить';
+        echo '
+<tr>
+    <td>'.$id.'</td>
+    <td>' . $name . '</td>
+    <td>'.$translit.'</td>
+    <td><a href="/manager/?action=toggle&cat='.$id.'">'.$is.'</a></td>
+</tr>
+';
+    }
 
-    </tr>
-</table>
-<h6><a href="/manager/cities">Cities</a></h6>
-<a href="/manager/new/?t=cities">New city</a>
+    echo  '</table>';
+}
+?>

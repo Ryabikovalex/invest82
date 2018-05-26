@@ -14,9 +14,16 @@ class controller_manager extends controller
     public function action_index()
     {
        $data['header'] = 'Администрирование';
-       if(isset($_GET) and !empty($_GET['hash']) and htmlentities($_GET['hash']) === 'hash256aes2048') {
-           $data['stat'] = $this->model->collect_statistic();
+       if (isset($_GET['action']))
+       {
+           switch ($_GET['action'])
+           {
+               case 'toggle':
+                   $data['success'] = $this->model->toggle_entry(htmlentities($_GET['cat']));
+                   break;
+           }
        }
+       $data['stat'] = $this->model->collect_statistic();
        $this->call_view('manager/default_view.php', $data);
     }
 
@@ -28,7 +35,7 @@ class controller_manager extends controller
     }
 
     /**
-     *  TODO
+     *  TODO show tables
      */
     public function action_products()
     {
@@ -66,7 +73,7 @@ class controller_manager extends controller
             $entry = $_GET['entry'];
             $data = $this->model->get_entry($table, $entry);
             $data['header'] = 'Редактирование';
-            $this->call_view('manager/edit_view.php', $data);
+            $this->call_view('manager/city_edit_view.php', $data);
         }else{
             $row = $_POST;
             unset($row['table']);
@@ -80,19 +87,4 @@ class controller_manager extends controller
         }
     }
 
-
-    /**Просмотр таблицы
-     * @param string $str таблица
-     * @param array $param параметр сортировки
-     * @return array $data содержимое таблицы
-     */
-    protected function get_list(string $str, array $param = array())
-    {
-
-        $from = isset($_GET['from']) ? $_GET['from'] : 0;
-        $to = isset($_GET['to']) ? $_GET['to'] : 25;
-        $data = $this->model->get_list($str, $from, $to, $param);
-
-        return $data;
-    }
 }

@@ -10,13 +10,13 @@ class model_manager extends model
         $MAX_ROWS = DataBase::run($sql2, [])->fetchAll(PDO::FETCH_COLUMN)[0];
 
 
-        $cat_stmt = DataBase::run($sql0, [])->fetchAll(PDO::FETCH_ASSOC);
+        $cat_stmt = DataBase::run($sql0, [])->fetchAll(PDO::FETCH_NUM);
         $result['categories']['main'] = $cat_stmt;
         $subcat_stmt = [];
         for ($i=0; $i < sizeof($cat_stmt); $i++)
         {
-            $_cat[] = $cat_stmt[$i]['id'];
-            $subcat_stmt[] = DataBase::run($sql1, [$cat_stmt[$i]['id']])->fetchAll(PDO::FETCH_ASSOC);
+            $_cat[] = $cat_stmt[$i][0];
+            $subcat_stmt[] = DataBase::run($sql1, [$cat_stmt[$i][0]])->fetchAll(PDO::FETCH_NUM);
         }
         $result['categories']['sub'] = $subcat_stmt;
 
@@ -24,6 +24,23 @@ class model_manager extends model
 
         return $result;
     }
+
+    public function toggle_entry( $id)
+    {
+        $sql0 = 'SELECT `categories`.`is_enabled` FROM `categories` WHERE `categories`.`id`=?';
+        $sql1 = 'UPDATE `categories` SET `categories`.`is_enabled`={toggle} WHERE `categories`.`id`='.$id;
+
+        $t = (int)DataBase::run($sql0, [$id])->fetchColumn()[0];
+        $toggle = ($t+1)%2;
+
+        $sql1 = str_replace('{toggle}', $toggle, $sql1);
+        $result = parent::$DBH->query($sql1);
+
+            return $result;
+    }
+
+
+
     /** Просмотр БД администраторами
      * @param string $db название таблицы
      * @param int $from
@@ -95,7 +112,7 @@ class model_manager extends model
             $query.= ' `'.$keys[$i].'`=?';
             if (($i+1) < count($keys))
                 $query.= ', ';
-			$arr[] = $value[$i];
+			$arr[] = $values[$i];
         }
         $query.= ' WHERE `id`='.$id;
         $data['success'] = parent::$DBH->query($query);
