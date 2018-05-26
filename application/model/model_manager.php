@@ -1,6 +1,10 @@
 <?php
 class model_manager extends model
 {
+    /**
+     * Сбор статистики и вывод категорий для главной страницы
+     * @return array
+     */
     public function collect_statistic() : array
     {
         $result = [ 'categories' => []];
@@ -52,8 +56,13 @@ class model_manager extends model
     public function get_list(string $db, int $from = 0, int $to = 25, array $param = array()) : array
     {
         switch ($db) {
-            case '':
-                $query = '';
+            case 'cities':
+                $query = 'SELECT * FROM `cities`';
+                break;
+            case 'products':
+                $query = 'SELECT `products`.`id`, `products`.`name`, `products`.`cost`, `B`.`name` AS `cityName`, `products`.`address`, `A`.`name` AS `catName`, `products`.`about` FROM `products` LEFT JOIN (SELECT `cities`.`id`, `cities`.`name` FROM `cities` ) `B` ON `products`.`city`=`B`.`id` LEFT JOIN (SELECT `categories`.`id`, `categories`.`name` FROM `categories`)`A` ON `products`.`category` = `A`.`id` ';
+                break;
+            case 'customers':
                 break;
         }
         if (is_array($param) and count($param) !== 0)
@@ -70,8 +79,9 @@ class model_manager extends model
             }
         }
         $query.= " LIMIT ".$from.", ".$to;
-        $data['table'] = Database::run($query, [])->fetchAll();
-        return $data;
+        var_dump($query);
+        $result = Database::run($query, [])->fetchAll(PDO::FETCH_NUM);
+        return $result;
     }
 
     /**
@@ -82,10 +92,19 @@ class model_manager extends model
      */
     public function get_entry(string $table,int $id) : array
     {
-        $query = 'SELECT * FROM ? WHERE id=?';
-        $data['row'] = Database::run($query, [$table, $id])->fetchAll()[0];
+        $query = 'SELECT * FROM `'.$table.'` WHERE `id`=?';
+        $data['row'] = Database::run($query, [ $id])->fetchAll()[0];
+        if ($table == 'products')
+        {
+            $sql0 = 'SELECT `categories`.`id`,`categories`.`name` FROM `categories` WHERE `categories`.`level` =0 ';
+            $sql1 = 'SELECT `categories`.`id`,`categories`.`name` FROM `categories` WHERE `categories`.`level` =1 ';
+            $parents = Database::run($sql0, [])->fetchAll();
+            $data['select'] = Database::run($sql1, [])->fetchAll(PDO::FETCH_NUM);
+            var_dump($data['select'], $parents);
+        }
         $data['table'] = $table;
         $data['entry'] = $id;
+        var_dump($data['row']);
         unset($data['row']['id']);
         foreach (array_keys($data['row']) as $key )
         {
@@ -104,7 +123,7 @@ class model_manager extends model
      */
     public function edit_entry(array $row, string $table, int $id) : array
     {
-        $query = 'UPDATE '.$table. ' SET ';
+        $query = 'UPDATE `'.$table.'` SET ';
         $keys = array_keys($row);
         $values = array_values($row);
         for ($i = 0; $i < count($keys); $i++)
@@ -115,7 +134,8 @@ class model_manager extends model
 			$arr[] = $values[$i];
         }
         $query.= ' WHERE `id`='.$id;
-        $data['success'] = parent::$DBH->query($query);
+        var_dump($row, $query);
+        $data['success'] = Database::run($query, $arr);
         return $data;
     }
 }

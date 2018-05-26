@@ -62,7 +62,6 @@ WHERE
         switch (count($ctg))
         {
             case 1:
-                var_dump($params);
                 if($ctg[0] !== '')
                 {
 

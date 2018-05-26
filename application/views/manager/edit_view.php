@@ -1,13 +1,18 @@
 <h5>Редактирование </h5>
-<form action="/manager/edit/?success=1" method="POST">
+<form action="/manager/edit/?edit=1" method="POST">
 <?php
 foreach ($row as $k => $value)
 {
-    if ($k == 'source')
+    if ($k == 'source' or $k == 'about')
     {
-        echo '<pre><textarea class="form-input" style="height: 45em; color: black" name="source" required>'.$value.'</textarea></pre>';
-    }else{
-        ?><input class="form-input" type="text" name="<?=$k?>" value="<?=$value?>" required><br/><?php
+        echo $k.' : <pre><textarea name="'.$k.'">'.$value.'</textarea></pre>';
+    }else if ( $k == 'is_enabled')
+    {
+        $checked = $value == 1 ? 'checked' : '';
+        echo '<input name="is_enabled" value="1" '.$checked.'/> enable <br/>';
+    }else
+    {
+        ?><?=$k?> : <input type="text" name="<?= $k ?>" value="<?= $value ?>" required><br/><?php
     }
 }
 ?>
