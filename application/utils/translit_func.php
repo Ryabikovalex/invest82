@@ -65,6 +65,7 @@ function to_translit ( string $s)
         'Э' => 'e',
         'Ю' => 'yu',
         'Я' => 'ya',
+        ' ' => '-'
     ];
 
     $result = str_replace(array_keys($alphabet), array_values($alphabet), $s);

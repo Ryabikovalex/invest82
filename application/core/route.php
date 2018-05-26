@@ -50,11 +50,7 @@ final class Route
         {
             switch ($routes[1])
             {
-                case 'product':
-
-                    break;
                 case 'manager':
-                case 'product':
                 case 'error  ':
                     // получаем имя контроллера
                     if ( !empty($routes[1]) )
@@ -68,6 +64,10 @@ final class Route
                     for( $i = 3; $i < count($routes)-2; $i+=2) {
                         self::$arg[$routes[$i]] = htmlentities($routes[$i + 1]);
                     }
+                    break;
+                case 'product':
+                    $controller_name = $routes[1];
+                    self::$arg['product_id'] =  $routes[2];
                     break;
                 default:
                         self::$arg['p'] = array_slice($routes, 1, 3);
