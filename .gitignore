@@ -1,4 +1,6 @@
 /.idea/
-/new_type/
-/frontend/node_modules/
-/frontend/.idea/
+/assets/images/
+refactor.php
+.htaccess
+.htaccess.txt
+
