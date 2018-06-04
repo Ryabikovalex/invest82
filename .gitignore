@@ -1,6 +1,7 @@
 /.idea/
+/application/utils/cron.log
 /assets/images/
 refactor.php
 .htaccess
 .htaccess.txt
-
+config.ini
