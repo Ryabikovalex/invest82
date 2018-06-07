@@ -2,6 +2,6 @@
 /application/utils/cron/cron.log
 /assets/images/
 refactor.php
-.htaccess
-.htaccess.txt
+/.htaccess
+/.htaccess.txt
 config.ini
