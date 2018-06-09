@@ -1,81 +1,56 @@
 ﻿<?php
 final class Route
 {
-    public static $arg;
-	public static $url;
-	private static $key_word = 'p';
-    private static function setParams($arr, $start_elem)
+    public static $arg = [];
+	public static $url = '/';
+	private static $key_word = [ 'region', 'city', 'cat', 'subcat'];
+    private static function setParams($arr, $start_elem, $key)
     {
         $arr_size = count($arr);
-        for($i = $start_elem; $i < $arr_size; $i++)
+        $i = $start_elem;
+        while ($i < $arr_size and !in_array($arr[$i], self::$key_word) and $arr[$i] != '')
         {
-            array_push(self::$arg['p'], $arr[$i]);
+            self::$arg[$key] = [];
+            array_push(self::$arg[$key], $arr[$i]);
+            $i++;
         }
     }
+
     /**
      *  Запуск маршрутизации
      */
 	public static function start()
 	{
-        /***
-         * $routes = explode('/', $_SERVER['REQUEST_URI']);
+        $routes = explode('/', $_SERVER['REQUEST_URI']);
         if (isset($_GET) and count($_GET) > 0)
-        {
-        array_pop($routes);
-        }
-        $routes_size = count($routes);
-
-        $controller_name = (!empty($routes[1] and $routes[1] !== self::$key_word) ?  $routes[2] : 'list';
-        $action_name = (!empty($routes[2] and $routes[2] !== self::$key_word) ?  $routes[2] : 'index';
-
-        for ($i=0; $i<$routes_size; $i++){
-        if(!empty($routes[$i]) and $routes[$i] === self::$key_word){
-        self::setParams($routes, $i+1);
-        }
-        }
-         */
-	    // контроллер и действие по умолчанию
-		$controller_name = 'list';
-		$action_name = 'index';
-		
-		
-		$routes = explode('/', $_SERVER['REQUEST_URI']);
-		if (isset($_GET) and count($_GET) > 0)
         {
             array_pop($routes);
         }
         self::$url = implode('/', $routes);
+        $routes_size = count($routes);
 
-		if (count($routes) > 1)
+
+        // контроллер и действие по умолчанию
+        $controller_name = 'shop';
+        $action_name = 'list';
+        $start = 0;
+
+        if ( !empty($routes[1]) and !in_array($routes[1], self::$key_word) )
         {
-            switch ($routes[1])
+            $start = 2;
+            $controller_name = $routes[1];
+        }
+        if ( !empty($routes[2])and !in_array($routes[1], self::$key_word)  and !in_array($routes[2], self::$key_word) )
+        {
+            $start = 3;
+            $action_name = $routes[2];
+        }
+        for ($i=$start; $i<$routes_size; $i++)
+        {
+            if(!empty($routes[$i]) and in_array( $routes[$i], self::$key_word) )
             {
-                case 'manager':
-                case 'error  ':
-                    // получаем имя контроллера
-                    if ( !empty($routes[1]) )
-                        $controller_name = $routes[1];
-
-                    // получаем имя экшена
-                    if ( !empty($routes[2]))
-                    {
-                        $action_name = preg_match( '/\d+/', $routes[2]) ? 'index' : $routes[2] ;
-                    }
-                    for( $i = 3; $i < count($routes)-2; $i+=2) {
-                        self::$arg[$routes[$i]] = htmlentities($routes[$i + 1]);
-                    }
-                    break;
-                case 'product':
-                    $controller_name = $routes[1];
-                    self::$arg['product_id'] =  $routes[2];
-                    break;
-                default:
-                        self::$arg['p'] = array_slice($routes, 1, 3);
-                    break;
+                self::setParams($routes, $i+1,  $routes[$i]);
             }
-        }else
-        {
-            self::$arg['p'] = [''];
         }
 
 		// добавляем префиксы
@@ -101,7 +76,7 @@ final class Route
 		else
 		{
 		    //Исключение
-			//Route::ErrorPage404();
+			Route::ErrorPage404();
 		}
 		
 		// создаем контроллер
@@ -114,8 +89,9 @@ final class Route
 		}
 		else
 		{
-			//Route::ErrorPage404();
+			Route::ErrorPage404();
 		}
+
 		session_write_close();
 	}
 

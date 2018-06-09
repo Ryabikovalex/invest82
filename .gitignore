@@ -1,5 +1,5 @@
 /.idea/
-/application/utils/cron/cron.log
+/application/utils/cron/
 /assets/images/
 refactor.php
 /.htaccess
