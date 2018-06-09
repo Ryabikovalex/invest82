@@ -1,11 +1,79 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const { pathname } = window.location;
+        let form = document.forms.filter;
+        let filter_place = document.getElementById('filter-place');
+
+        form.onclick =function (e) {
+            let target = e.target;
+            let span = target.closest('label > span[data-load]');
+            if (!span) return;
+            if (!form.contains(span)) return;
+            let radio = span.parentNode.childNodes[0];
+
+            let div = document.querySelector(`div[data-parent="${radio.value}"]`);
+            filter_place.innerHTML = '';
+            filter_place.innerHTML = div.innerHTML;
+        };
+
+        let filter_sbmt = document.getElementById('filter_sbmt');
+        filter_sbmt.onclick = function (e) {
+            e.preventDefault();
+
+            let pl_ch_r = [].filter.call(form.querySelectorAll('input[name="region"]') , function (c) {
+                if (c.checked)
+                    return c;
+            })[0];
+            let pl_url = '';
+            if (typeof pl_ch_r !== "undefined")
+            {
+                let doc = form.querySelectorAll('input[type="checkbox"][name="city"]');
+
+                let checked = [].filter.call(doc, function (child) { if (child.checked) return child; } );
+                if (checked.length > 0)
+                {
+                    pl_url='/city';
+                    checked.forEach(function (c) {
+                        pl_url += '/' + c.value;
+                    });
+                }else
+                {
+                    pl_url='/region/'+pl_ch_r.value;
+                }
+            }
+
+            let cat_ch_r = [].filter.call(form.querySelectorAll('input[name=\"cat\"]') , function (c) {
+                if (c.checked)
+                    return c;
+            })[0];
+            let cat_url;
+            if (typeof cat_ch_r !== "undefined")
+            {
+                let doc = form.querySelectorAll('input[type="checkbox"][name="scat"][data-parent="'+cat_ch_r.getAttribute('data-id')+'"]');
+
+                let checked = [].filter.call(doc, function (child) { if (child.checked) return child; } );
+                if (checked.length > 0)
+                {
+                    cat_url='/subcat';
+                    checked.forEach(function (c) {
+                        cat_url += '/' + c.value;
+                    });
+                }else
+                {
+                    cat_url='/cat/'+cat_ch_r.value;
+                }
+            }
+            form.action = pathname+pl_url+cat_url;
+            form.submit();
+        };
+    });
+</script>
 <div>
-    Sort by: <a href="<?=Route::$url?>/?sort_by=cost&sort=1">price ↓</a> - <a href="<?=Route::$url?>/?sort_by=cost&sort=-1">price ↑</a>;
-            <a href="<?=Route::$url?>/?sort_by=city&sort=1">town ↓</a> - <a href="<?=Route::$url?>/?sort_by=city&sort=-1">town ↑</a>
-            <a href="<?=Route::$url?>/?sort_by=name&sort=-1">name ↓</a>
+    Отсортировать по цене: <a href="<?=Route::$url?>/?sort_by=cost&sort=1">Дороже</a> - <a href="<?=Route::$url?>/?sort_by=cost&sort=-1">Дешевле ↑</a>
 </div>
 <div>
 <?php if (is_array($items) and count($items) == 0){?>
-    <p>Empty<?=$_SERVER['HTTP_CONNECTION']?></p>
+    <p>Empty <?=$_SERVER['HTTP_CONNECTION']?></p>
 <?php }else{foreach ( $items as $k => $param){
     list($id, $name, $cost, $catTranslit, $subcatName, $subcatTranslit, $cityName, $cityTranslit) = array_values($param);
 ?>
@@ -13,7 +81,7 @@
     <table border="1">
         <tr>
             <th><?=$subcatName?></th>
-            <th><a href="/product/<?=$id?>"><?=$name?></a></th>
+            <th><a href="/shop/product/<?=$id?>"><?=$name?></a></th>
         </tr>
         <tr>
             <td><?=$cost?></td>
