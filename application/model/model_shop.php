@@ -1,5 +1,5 @@
 <?php
-class model_list extends model
+class model_shop extends model
 {
     public function getList( int $from = 0,int $to = 49,array $ctg, ...$params)
     {
@@ -59,7 +59,7 @@ WHERE
     `B`.`catEnabled` = 1 AND `B`.`subcatEnabled` = 1 ';
         $payload = [];
 
-        switch (count($ctg))
+        /*switch (count($ctg))
         {
             case 1:
                 if($ctg[0] !== '')
@@ -127,7 +127,7 @@ WHERE
                             WHERE
                                 `categories`.`is_enabled` = 1 AND `categories`.`translit` = ?
                         )
-                    ) ';*/
+                    ) ';
                     $sql = 'SELECT
     `products`.`id`,
     `products`.`name`,
@@ -234,7 +234,7 @@ LEFT JOIN
 ON
     `B`.`parent` = `C`.`id`
 WHERE
-    `C`.`is_enabled` = 1 AND `B`.`is_enabled` = 1 AND `products`.`city` = (SELECT `cities`.`id` FROM `cities` WHERE `cities`.`translit`=?)';*/
+    `C`.`is_enabled` = 1 AND `B`.`is_enabled` = 1 AND `products`.`city` = (SELECT `cities`.`id` FROM `cities` WHERE `cities`.`translit`=?)';
                 $sql = 'SELECT
     `products`.`id`,
     `products`.`name`,
@@ -346,7 +346,7 @@ WHERE
     `B`.`catEnabled` = 1 AND `B`.`subcatEnabled` = 1 AND `B`.`catTranslit`=? AND `A`.`translit`=? AND `B`.`subcatTranslit`=?';
                 $payload = [ $ctg[0], $ctg[1], $ctg[2]];
                 break;
-        }
+        }*/
 
         if(isset($_sort) and count($_sort)) {
             $sort = ' ORDER BY `'.array_values($_sort)[0].'` ';
@@ -371,5 +371,57 @@ WHERE
         $stmt = DataBase::run($sql, $payload);
 
         return $stmt->fetchAll();
+    }
+
+    public function getHeader( array $params = [])
+    {
+        if(count($params) == 0)
+        {
+
+        }else
+        {
+
+        }
+
+        return;
+    }
+
+    public function getFilters ( string $param, int $strict)
+    {
+        $sql = 'SELECT `name`, `translit` FROM ';
+        switch ($param)
+        {
+            case 'region':
+                $sql .= '`region`';
+                break;
+            case 'city':
+                $sql .= '`city`';
+                break;
+            case 'category':
+                $sql .= '`categories` WHERE `parent`=0';
+                break;
+            case 'subcategory':
+                $sql .= '`categories` WHERE `parent`!=0';
+                break;
+        }
+        if( !in_array($param, ['category', 'subcategory']))
+        {
+            if ( $strict === 1)
+            {
+                $sql .= ' WHERE `is_enabled`=1';
+                $sql .= ' AND  `country_id`=3159';
+            }else
+            {
+                $sql .= 'WHERE `country_id`=3159';
+            }
+        }
+        $sql .= ' ORDER BY `name` ASC';
+        $result = Database::run($sql, [])->fetchAll(PDO::FETCH_NUM);
+        return $result;
+    }
+
+    public function add_buyer( array $data)
+    {
+
     }
 }
