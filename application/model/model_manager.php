@@ -2,29 +2,50 @@
 class model_manager extends model
 {
     /**
-     * Сбор статистики и вывод категорий для главной страницы
+     * Сбор статистики и вывод новых поступлений для главной страницы
      * @return array
      */
-    public function collect_statistic() : array
+    public function collect_statistic($from, $to) : array
     {
-        $result = [ 'categories' => []];
-        $sql0 = 'SELECT * FROM `categories` WHERE `categories`.`level` = 0';
-        $sql1 = 'SELECT * FROM `categories` WHERE `categories`.`level` = 1 AND `categories`.`parent`=?';
-        $sql2 = 'SELECT COUNT(`categories`.`id`) FROM `categories` WHERE `categories`.`level`=1 GROUP BY `categories`.`parent`  ORDER BY COUNT(`categories`.`id`) DESC';
-        $MAX_ROWS = DataBase::run($sql2, [])->fetchAll(PDO::FETCH_COLUMN)[0];
+        $result = [ 'submit_products' => []];
+        $result['submit_products_count'] = Database::run('SELECT COUNT(`id`) FROM `submit_products`')->fetch(PDO::FETCH_NUM)[0];
 
+        return $result;
+    }
 
-        $cat_stmt = DataBase::run($sql0, [])->fetchAll(PDO::FETCH_NUM);
-        $result['categories']['main'] = $cat_stmt;
-        $subcat_stmt = [];
-        for ($i=0; $i < sizeof($cat_stmt); $i++)
+    public function show_new_products($from, $to)
+    {
+        $result = [];
+        $sbmt_sql = 'SELECT `id` AS `productID`, `name`, `cost`, `earn_p_m`, `C`.`regionName`, `B`.`cityName`, `address`, `about`, `added`, `is_conf`, `A`.`fio`, `A`.`number` FROM `submit_products` LEFT JOIN( SELECT `id` AS `cId`, `fio`, `number` FROM `customers` ) `A` ON `customer_id` = `A`.`cId` LEFT JOIN( SELECT `id` AS `cityId`, `name` AS `cityName`, `region_id` as `regId` FROM `city` WHERE `country_id` = 3159 ) `B` ON `city_id` = `B`.`cityID` LEFT JOIN( SELECT `id` AS `rID`, `name` AS `regionName` FROM `region` WHERE `country_id` = 3159 ) `C` ON `B`.`regId` = `C`.`rID` ORDER BY  `added` ASC LIMIT {from}, {to}';
+        $sbmt_sql = str_ireplace( ['{from}', '{to}'], [ $from, $to], $sbmt_sql);
+        $stmt = Database::run($sbmt_sql)->fetchAll(PDO::FETCH_NUM);
+        foreach ($stmt as $k => $v)
         {
-            $_cat[] = $cat_stmt[$i][0];
-            $subcat_stmt[] = DataBase::run($sql1, [$cat_stmt[$i][0]])->fetchAll(PDO::FETCH_NUM);
+            $arr_size = count($v);
+            for ( $i=0; $i < $arr_size; $i++)
+            {
+                if ( $i != 8 and $i != 9 and ($v[$i] === '' or $v[$i] === 0 or $v[$i] === null) )
+                    $v[$i] = '<span class="text-secondary">Неизвестно</span>';
+                if ($i == 8)
+                {
+                    if ( $v[$i]== '0000-00-00 00:00:00' )
+                {
+                    $v[$i] = '<p class="text-secondary">Неизвестно</p>';
+                }else
+                {
+                    $v[$i] = date( 'd.m.Y', strtotime( substr($v[$i], 0, 10) ) );
+                }
+                }
+                if ( $i == 9)
+                {
+                    if ($v[$i] == 1)
+                        $v[$i] = '<span class="badge badge-danger">Конфидециально</span>';
+                    else
+                        $v[$i] = '';
+                }
+            }
+            $result[] = $v;
         }
-        $result['categories']['sub'] = $subcat_stmt;
-
-        //var_dump($subcat_stmt);
 
         return $result;
     }
