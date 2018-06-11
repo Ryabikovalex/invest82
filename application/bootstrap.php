@@ -4,6 +4,7 @@ require_once  'core/config.php';
 LOAD_CONFIGURATION('config.ini');
 //require_once 'core/autoloader.php';
 require_once 'utils/translit_func.php';
+require_once 'utils/format_cost.php';
 
 //Подключение базы данных
 require_once 'core/Database.php';
