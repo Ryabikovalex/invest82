@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 class model
 {
 	/*
@@ -18,7 +18,7 @@ class model
             self::$DBH = Database::instance( PDO['host'], PDO['database'], PDO['charset'], PDO['user'], PDO['password']);
         }catch(PDOException $a)
         {
-            $a->getMessage();
+            //$a->getMessage();
         }
 
     }

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 final class Route
 {
     public static $arg = [];
@@ -32,7 +32,7 @@ final class Route
 
         // контроллер и действие по умолчанию
         $controller_name = 'shop';
-        $action_name = 'list';
+        $action_name = 'index';
         $start = 0;
 
         if ( !empty($routes[1]) and !in_array($routes[1], self::$key_word) )
@@ -51,6 +51,13 @@ final class Route
             {
                 self::setParams($routes, $i+1,  $routes[$i]);
             }
+        }
+
+        session_start();
+        //Запрет на доступ к администрированию
+        if ($controller_name == 'manager' and (!isset($_SESSION['auth']) or $_SESSION['auth'] != '36f50957f5e0b6ee3ef455674da35a86667f3314209dc1514c510fe95e840831') )
+        {
+            $action_name = 'log_in';
         }
 
 		// добавляем префиксы

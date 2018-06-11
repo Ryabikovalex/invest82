@@ -13,13 +13,13 @@ class View
 	* @param array $data Информация
 	*
 	*/
-	public static function generate($content_view, $data)
+	public static function generate($content_view, $data, $template = 'template_view.php')
 	{
 		if(is_array($data)) {
 			// преобразуем элементы массива в переменные
 			extract($data);
 		}
 		//Подключаем нужный нам вид
-		include 'application/views/'.self::$template_view;
+		include 'application/views/'.$template;
 	}
 }

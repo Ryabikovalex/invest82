@@ -10,7 +10,6 @@ require_once 'core/Database.php';
 Database::instance( PDO['host'], PDO['database'], PDO['charset'], PDO['user'], PDO['password']);
 //Запускаем пользователей
 //require_once 'core/user.php';
-session_start();
 
 //Подключаем модели, виды, контроллеры
 require_once 'core/model.php';
