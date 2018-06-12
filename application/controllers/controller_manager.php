@@ -12,16 +12,7 @@ class controller_manager extends controller
      */
     public function action_index()
     {
-        $data['header'] = 'Администрирование';
-        if (isset($_GET['action']))
-        {
-            switch ($_GET['action'])
-            {
-                case 'toggle':
-                    $data['success'] = $this->model->toggle_entry(htmlentities($_GET['cat']));
-                    break;
-            }
-        }
+
         $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? (int)htmlspecialchars($_GET['page']) : 1;
         $from = ($page-1)*25;
         $to = $page * 25 - 1;
@@ -29,10 +20,57 @@ class controller_manager extends controller
         $data['from'] = $page-1;
         $data['to'] = $page+1;
 
-        $data['stat'] = $this->model->collect_statistic($from, $to);
+        $data['header'] = 'Администрирование';
+        $data['stat'] = $this->model->collect_statistic();
         $data['table'] = $this->model->show_new_products($from, $to);
         View::generate('default_view.php', $data, 'manager/template_view.php');
     }
+
+    public function action_show_table()
+    {
+        $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? (int)htmlspecialchars($_GET['page']) : 1;
+        $from = ($page-1)*25;
+        $to = $page * 25 - 1;
+        $data['from'] = $page-1;
+        $data['to'] = $page+1;
+        $table = '';
+
+        $data['stat'] = $this->model->collect_statistic();
+        switch (htmlspecialchars($_GET['t']))
+        {
+            case 'submit_products':
+                $data['table'] = $this->model->show_new_products($from, $to);
+                $table = 'submit_products';
+                break;
+            case 'submit_buyers':
+                $data['table'] = $this->model->show_new_buyers($from, $to);
+                break;
+        }
+
+        $data['header'] = 'Показ таблицы';
+        View::generate('tables/'.$table.'_view.php', $data, 'manager/template_view.php');
+    }
+
+    public function action_submit_product()
+    {
+        $entry = (isset($_GET['entry'])) ? htmlspecialchars($_GET['entry']) : 1;
+        if (isset($_GET['entry']))
+        {
+            $data['submit'] = $this->model->submit_product($entry);
+        }else
+        {
+            $data['success'] = $this->model->public_product($_POST);
+        }
+
+        $data['header'] = 'Одобрение продукта';
+        $data['stat'] = $this->model->collect_statistic();
+        $data['brokers'] = $this->model->get_brokers();
+        View::generate('tables/new_product_view.php', $data, 'manager/template_view.php');
+    }
+
+    /**
+     * Авторизация в админ.панель
+     */
     public function action_log_in()
     {
         $data =[];
@@ -47,6 +85,8 @@ class controller_manager extends controller
         View::generate('', $data, 'manager/login_view.php');
     }
 
+
+
     public function action_cities()
     {
         $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? htmlspecialchars($_GET['page']) : 1;
@@ -56,20 +96,6 @@ class controller_manager extends controller
         $data['data'] = $this->model->get_list('cities', $from, $to);
         $data['header'] = 'Список городов';
         $this->call_view('manager/cities_list_view.php', $data);
-    }
-
-    public function action_products()
-    {
-        $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? htmlspecialchars($_GET['page']) : 1;
-        $from = ($page-1)*50;
-        $to = $page * 50 - 1;
-
-        $param = array();
-		$p = isset($_GET['param']) ? (int)htmlspecialchars($_GET['param']) : 1;
-
-		$data = $this->model->get_list('products', $from, $to, $param);
-        $data['header'] = 'Список товаров';
-        $this->call_view('manager/products_list_view.php', $data);
     }
 
 

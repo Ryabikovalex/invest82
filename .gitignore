@@ -1,6 +1,7 @@
 /.idea/
 /application/utils/cron/
 /assets/images/
+/assets/json/
 refactor.php
 /.htaccess
 /.htaccess.txt
