@@ -7,17 +7,19 @@ class model_manager extends model
      */
     public function collect_statistic() : array
     {
-        $result['regions_active_count'] = Database::run('SELECT COUNT(`id`) FROM `region` WHERE `country_id`=3159 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
-        $result['regions_count'] = Database::run('SELECT COUNT(`id`) FROM `region` WHERE `country_id`=3159')->fetch(PDO::FETCH_NUM)[0];
-        $result['cat_active_count'] = Database::run('SELECT COUNT(`id`) FROM `categories` WHERE `parent`=0 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
-        $result['cat_count'] = Database::run('SELECT COUNT(`id`) FROM `categories` WHERE `parent`=0')->fetch(PDO::FETCH_NUM)[0];
-        $result['products_count'] = Database::run('SELECT COUNT(`id`) FROM `products`')->fetch(PDO::FETCH_NUM)[0];
+        $result['regions_active_count'] = Database::run('SELECT COUNT(*) FROM `region` WHERE `country_id`=3159 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
+        $result['regions_count'] = Database::run('SELECT COUNT(*) FROM `region` WHERE `country_id`=3159')->fetch(PDO::FETCH_NUM)[0];
+        $result['city_count'] = Database::run('SELECT COUNT(*) FROM `city` WHERE `country_id`=3159')->fetch(PDO::FETCH_NUM)[0];
+        $result['city_active_count'] = Database::run('SELECT COUNT(*) FROM `city` WHERE `country_id`=3159 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
+        $result['cat_active_count'] = Database::run('SELECT COUNT(*) FROM `categories` WHERE `parent`=0 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
+        $result['cat_count'] = Database::run('SELECT COUNT(*) FROM `categories` WHERE `parent`=0')->fetch(PDO::FETCH_NUM)[0];
+        $result['products_count'] = Database::run('SELECT COUNT(*) FROM `products`')->fetch(PDO::FETCH_NUM)[0];
         $result['reports_count'] = 0;
-        $result['submit_buyers_count'] = Database::run('SELECT COUNT(`id`) FROM `submit_buyers`')->fetch(PDO::FETCH_NUM)[0];
-        $result['submit_products_count'] = Database::run('SELECT COUNT(`id`) FROM `submit_products`')->fetch(PDO::FETCH_NUM)[0];
-        $result['brokers_count'] = Database::run('SELECT COUNT(`id`) FROM `brokers`')->fetch(PDO::FETCH_NUM)[0];
-        $result['buyers_count'] = Database::run('SELECT COUNT(`id`) FROM `buyers`')->fetch(PDO::FETCH_NUM)[0];
-        $result['customers_count'] = Database::run('SELECT COUNT(`id`) FROM `customers`')->fetch(PDO::FETCH_NUM)[0];
+        $result['submit_buyers_count'] = Database::run('SELECT COUNT(*) FROM `submit_buyers`')->fetch(PDO::FETCH_NUM)[0];
+        $result['submit_products_count'] = Database::run('SELECT COUNT(*) FROM `submit_products`')->fetch(PDO::FETCH_NUM)[0];
+        $result['brokers_count'] = Database::run('SELECT COUNT(*) FROM `brokers`')->fetch(PDO::FETCH_NUM)[0];
+        $result['buyers_count'] = Database::run('SELECT COUNT(*) FROM `buyers`')->fetch(PDO::FETCH_NUM)[0];
+        $result['customers_count'] = Database::run('SELECT COUNT(*) FROM `customers`')->fetch(PDO::FETCH_NUM)[0];
         return $result;
     }
 
@@ -65,6 +67,53 @@ class model_manager extends model
             $result[] = $v;
         }
 
+        return $result;
+    }
+
+    /** Показывает регионы , кол-во брокеров и покупателей, городов
+     * @param $from
+     * @param $to
+     *
+     * @return array
+     */
+    public function show_regions( $from, $to)
+    {
+        $sql0 = 'SELECT `id`, `name`, `header`, `translit`, `is_enabled`,`A`.`cities`, `C`.`count`, `D`.`buyers` FROM `region` LEFT JOIN (SELECT `region_id` AS `regId`, COUNT(*) AS `cities` FROM `city`  WHERE `country_id`=3159 GROUP BY `regId`) `A` ON `id`=`A`.`regId` LEFT JOIN (SELECT `region_id` AS `rId`, COUNT(*) AS `count` FROM `brokers`) `C` ON `id`=`C`.`rId` LEFT JOIN (SELECT `region` AS `reId`, COUNT(*) AS `buyers` FROM `buyers`) `D` ON `id`=`D`.`reId` WHERE  `country_id`=3159 ORDER BY `name` ASC LIMIT {from},{to}';
+        $sql0 = str_ireplace( ['{from}', '{to}'], [ $from, $to], $sql0);
+        $stmt = Database::run($sql0)->fetchAll(PDO::FETCH_NUM);
+        foreach ($stmt as $k => $arr)
+        {
+            foreach ($arr as $i => $v)
+            {
+                if (is_null($v))
+                {
+                    $stmt[$k][$i] = 0;
+                }
+            }
+        }
+        $result = $stmt;
+
+        return $result;
+    }
+
+    public function show_cities($from, $to,int $region_id = 0)
+    {
+        $sql = 'SELECT `id`, `name`, `header`, `translit`, `is_enabled`, `region_id`, `A`.`regionName`, `B`.`products`, `C`.`buyers` FROM `city` LEFT JOIN (SELECT `id` AS `regId`, `name` AS `regionName` FROM `region`  WHERE `country_id`=3159) `A` ON `region_id`=`A`.`regId` LEFT JOIN (SELECT `city_id`, COUNT(*) AS `products` FROM `products` GROUP BY `city_id`) `B` ON `id`=`B`.`city_id` LEFT JOIN (SELECT `city` AS `bId`, COUNT(*) AS `buyers` FROM `buyers` GROUP BY `city`) `C` ON `id`=`bId`  WHERE  `country_id`=3159 {replace} ORDER BY `name` ASC LIMIT {from},{to}';
+        $replace = ( $region_id !== 0 ) ? 'AND `region_id`='.$region_id : '';
+        $sql = str_ireplace( ['{from}', '{to}', '{replace}'], [ $from, $to, $replace], $sql);
+
+        $stmt = Database::run($sql)->fetchAll(PDO::FETCH_NUM);
+        foreach ($stmt as $k => $arr)
+        {
+            foreach ($arr as $i => $v)
+            {
+                if (is_null($v))
+                {
+                    $stmt[$k][$i] = 0;
+                }
+            }
+        }
+        $result = $stmt;
         return $result;
     }
 
@@ -166,20 +215,6 @@ class model_manager extends model
         return $result;
     }
 
-    public function toggle_entry($table,  $id)
-    {
-        $sql0 = 'SELECT `categories`.`is_enabled` FROM `categories` WHERE `categories`.`id`=?';
-        $sql1 = 'UPDATE `categories` SET `categories`.`is_enabled`={toggle} WHERE `categories`.`id`='.$id;
-
-        $t = (int)DataBase::run($sql0, [$id])->fetchColumn()[0];
-        $toggle = ($t+1)%2;
-
-        $sql1 = str_replace('{toggle}', $toggle, $sql1);
-        $result = parent::$DBH->query($sql1);
-
-         return $result;
-    }
-
     /** Просмотр БД администраторами
      * @param string $db название таблицы
      * @param int $from
@@ -219,34 +254,26 @@ class model_manager extends model
         return $result;
     }
 
-    /**
-     * Выбор записи для редактирования
-     * @param string $table Таблица
-     * @param int $id Запись в таблице
-     * @return array $data
-     */
-    public function get_entry(string $table,int $id) : array
+    public function toggle_entry($table,  $id)
     {
-        $query = 'SELECT * FROM `'.$table.'` WHERE `id`=?';
-        $data['row'] = Database::run($query, [ $id])->fetchAll()[0];
-        if ($table == 'products')
-        {
-            $sql0 = 'SELECT `categories`.`id`,`categories`.`name` FROM `categories` WHERE `categories`.`level` =0 ';
-            $sql1 = 'SELECT `categories`.`id`,`categories`.`name` FROM `categories` WHERE `categories`.`level` =1 ';
-            $parents = Database::run($sql0, [])->fetchAll();
-            $data['select'] = Database::run($sql1, [])->fetchAll(PDO::FETCH_NUM);
-            var_dump($data['select'], $parents);
-        }
-        $data['table'] = $table;
-        $data['entry'] = $id;
-        var_dump($data['row']);
-        unset($data['row']['id']);
-        foreach (array_keys($data['row']) as $key )
-        {
-            if(is_int($key))
-                unset($data['row'][$key]);
-        }
-        return $data;
+        $sql0 = str_ireplace( '{table}', $table, 'SELECT `is_enabled` FROM `{table}` WHERE `id`=?');
+        $sql1 = str_ireplace( '{table}', $table, 'UPDATE `{table}` SET `is_enabled`={toggle} WHERE `id`='.$id);
+
+        $t = (int)DataBase::run($sql0, [$id])->fetchColumn()[0];
+        $toggle = ($t+1)%2;
+
+        $sql1 = str_replace('{toggle}', $toggle, $sql1);
+        var_dump($sql1);
+        $result = parent::$DBH->query($sql1);
+        return $result;
+    }
+
+    public function delete_entry( string $table, $id)
+    {
+        $sql = 'DELETE FROM `{table}` WHERE `id`=?';
+        $sql = str_ireplace('{table}', $table, $sql);
+        $stmt = Database::run($sql, [$id]);
+        return $stmt;
     }
 
     /**

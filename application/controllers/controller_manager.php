@@ -20,6 +20,20 @@ class controller_manager extends controller
         $data['from'] = $page-1;
         $data['to'] = $page+1;
 
+        if (isset($_GET['action']))
+        {
+            $action = htmlspecialchars($_GET['action']);
+            switch ($action)
+            {
+                case 'cron':
+
+                    break;
+                case 'delete':
+                    $data['success'] = $this->model->delete_entry(htmlspecialchars($_GET['table']), htmlspecialchars($_GET['entry']));
+                    break;
+            }
+        }
+
         $data['header'] = 'Администрирование';
         $data['stat'] = $this->model->collect_statistic();
         $data['table'] = $this->model->show_new_products($from, $to);
@@ -33,10 +47,18 @@ class controller_manager extends controller
         $to = $page * 25 - 1;
         $data['from'] = $page-1;
         $data['to'] = $page+1;
-        $table = '';
+        $table = htmlspecialchars($_GET['t']);
+
+        if (isset($_GET['action']))
+        {
+            if ( htmlspecialchars($_GET['action']) == 'toggle')
+            {
+                $data['success'] = $this->model->toggle_entry( $table, htmlspecialchars($_GET['entry']));
+            }
+        }
 
         $data['stat'] = $this->model->collect_statistic();
-        switch (htmlspecialchars($_GET['t']))
+        switch ( $table)
         {
             case 'submit_products':
                 $data['table'] = $this->model->show_new_products($from, $to);
@@ -45,6 +67,11 @@ class controller_manager extends controller
             case 'submit_buyers':
                 $data['table'] = $this->model->show_new_buyers($from, $to);
                 break;
+            case 'region':
+                $data['table'] = $this->model->show_regions($from, $to);
+            case 'city':
+                $region_id = $_GET['region_id'] ?? 0;
+                $data['table'] = $this->model->show_cities($from, $to, $region_id);
         }
 
         $data['header'] = 'Показ таблицы';
@@ -65,7 +92,7 @@ class controller_manager extends controller
         $data['header'] = 'Одобрение продукта';
         $data['stat'] = $this->model->collect_statistic();
         $data['brokers'] = $this->model->get_brokers();
-        View::generate('tables/new_product_view.php', $data, 'manager/template_view.php');
+        View::generate('new_product_view.php', $data, 'manager/template_view.php');
     }
 
     /**
@@ -85,20 +112,6 @@ class controller_manager extends controller
         View::generate('', $data, 'manager/login_view.php');
     }
 
-
-
-    public function action_cities()
-    {
-        $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? htmlspecialchars($_GET['page']) : 1;
-        $from = ($page-1)*50;
-        $to = $page * 50 - 1;
-
-        $data['data'] = $this->model->get_list('cities', $from, $to);
-        $data['header'] = 'Список городов';
-        $this->call_view('manager/cities_list_view.php', $data);
-    }
-
-
     public function action_edit()
     {
         if(!isset($_GET['edit']))
@@ -115,18 +128,10 @@ class controller_manager extends controller
             $table = $_POST['table'];
             $id = $_POST['entry'];
             $data = $this->model->edit_entry($row, $table, $id);
-            if (isset($_GET['action']))
-            {
-                switch ($_GET['action'])
-                {
-                    case 'toggle':
-                        $data['success'] = $this->model->toggle_entry(htmlentities($_GET['cat']));
-                        break;
-                }
-            }
+
             $data['stat'] = $this->model->collect_statistic();
             $data['header'] = 'Администрирование';
-            $this->call_view('manager/default_view.php',$data);
+            View::generate('default_view.php',$data, 'manager/template_view.php');
         }
     }
 

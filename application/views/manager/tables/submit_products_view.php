@@ -18,6 +18,7 @@
         <tr>
             <th>#</th>
             <th></th>
+            <th></th>
             <th>Название</th>
             <th>Метка</th>
             <th>Стоимость</th>
@@ -30,7 +31,7 @@
         <?php foreach ($table as $k => $arr)
         {
             list( $id, $name, $cost, $earn, $regionName, $address, $about, $added, $conf, $customer, $customer_tel) = $arr;
-            echo '<tr><td>'.$id.'</td><td><a class=" btn-link" href="/manager/submit_product/?entry='.$id.'">Одобрить</a></td><td>'.$name.'<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_cat_'.$id.'" aria-expanded="false" aria-controls="#collapse_cat_'.$id.'">
+            echo '<tr><td>'.$id.'</td><td><a class=" btn-link" href="/manager/submit_product/?entry='.$id.'">Одобрить</a></td><td><a class=" btn-link" href="/manager/?action=delete&table=submit_products&entry='.$id.'">Удалить</a></td><td>'.$name.'<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse_cat_'.$id.'" aria-expanded="false" aria-controls="#collapse_cat_'.$id.'">
             Подробнее
         </button>
         <div id="collapse_cat_'.$id.'" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
