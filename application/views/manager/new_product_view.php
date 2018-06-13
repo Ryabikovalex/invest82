@@ -155,7 +155,7 @@ if (isset($submit))
                     }
                 }
             };
-            req.open("GET", '/assets/json/manager/'+folder+'/'+val+'.json', true);
+            req.open("GET", '/assets/json/all/'+folder+'/'+val+'.json', true);
             req.send();
         }
         document.querySelector('select#region').onchange = function (e) {

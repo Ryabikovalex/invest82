@@ -9,10 +9,10 @@ if ( $form['success'] == true)
     <input type="text" name="fio" placeholder="ФИО" pattern="" required><br/>
 
     <p class="error" id="number"></p>
-    <input type="text" name="number" placeholder="Номер телефона" pattern="+7(\d{3})\d{7}" required><br/>
+    <input type="text" name="number" placeholder="Номер телефона" required><br/>
 
     <p class="error" id="email"></p>
-    <input type="text" name="email" placeholder="Электронная почта" pattern=""><br/>
+    <input type="text" name="email" placeholder="Электронная почта"><br/>
 
     <p class="error" id="text"></p>
     <textarea type="text" name="text" placeholder="..." required></textarea><br/>
