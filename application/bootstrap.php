@@ -7,6 +7,7 @@ require_once 'utils/translit_func.php';
 require_once 'utils/format_cost.php';
 
 //Подключение базы данных
+require_once 'core/semanticCore.php';
 require_once 'core/Database.php';
 Database::instance( PDO['host'], PDO['database'], PDO['charset'], PDO['user'], PDO['password']);
 //Запускаем пользователей

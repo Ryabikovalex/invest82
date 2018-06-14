@@ -69,11 +69,13 @@ class controller_manager extends controller
                 break;
             case 'region':
                 $data['table'] = $this->model->show_regions($from, $to);
+                break;
             case 'city':
                 $region_id = $_GET['region_id'] ?? 0;
                 $data['table'] = $this->model->show_cities($from, $to, $region_id);
+                break;
         }
-
+        Route::$url.='/?t='.$table;
         $data['header'] = 'Показ таблицы';
         View::generate('tables/'.$table.'_view.php', $data, 'manager/template_view.php');
     }
