@@ -61,7 +61,7 @@ class model_manager extends model
                 }
                 if (($i == 2 or $i == 3) and is_int((int)$v[$i]) == true )
                 {
-                   $v[$i] = cost_format($v[$i]);
+                   $v[$i] = format_cost($v[$i]);
                 }
             }
             $result[] = $v;

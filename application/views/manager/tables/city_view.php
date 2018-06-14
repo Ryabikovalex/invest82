@@ -32,8 +32,8 @@ if (isset($success))
 <ul class="pagination justify-content-center">
     <?php $dp = (isset($from)and$from>0) ? '' : 'disabled';
     $dn = (isset($to) and $to>1) ? '' : 'disabled'?>
-    <li class="page-item <?=$dp?>"><a class="page-link" href="<?=Route::$url?>/?t=<?=$_GET['t']?>&page=<?= $from?>"> ← Назад</a></li>
-    <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>/?t=<?=$_GET['t']?>&page=<?= $to?>">Вперед →</a></li>
+    <li class="page-item <?=$dp?>"><a class="page-link" href="<?=Route::$url?>&page=<?= $from?><?php echo (isset($_GET['region_id'])) ? '&region_id='.$_GET['region_id'] : ''?>"> ← Назад</a></li>
+    <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>&page=<?= $to?><?php echo (isset($_GET['region_id'])) ? '&region_id='.$_GET['region_id'] : ''?>">Вперед →</a></li>
 </ul>
 
 <p>Клик по статусу города переключает его.</p>
@@ -67,8 +67,9 @@ if (isset($success))
         <?php foreach ($table as $k => $arr)
         {
             list( $id, $name, $header, $translit, $is_enabled, $region_id, $region_name, $products, $buyers) = $arr;
-            $enable_url = Route::$url.'/?t='.$_GET['t'].'&action=toggle&entry='.$id;
+            $enable_url = Route::$url.'&action=toggle&entry='.$id;
             $enable_url.= (isset($_GET['page'])) ? '&page='.$_GET['page'] : '';
+            $enable_url.= (isset($_GET['region_id'])) ? '&region_id='.$_GET['region_id'] : '';
             $enable = ($is_enabled == 0) ? '<a href="'.$enable_url.'" class="badge badge-danger">Отключен</a>' : '<a href="'.$enable_url.'" class="badge badge-success">Активен</a>';
             echo '<tr>
 <td><a class=" btn-link" href="/manager/edit/?t=city&entry='.$id.'">Редактировать</a></td>
@@ -79,7 +80,7 @@ if (isset($success))
 <td>'.$products.'</td>
 <td>'.$translit.'</td>
 <td>'.$header.'</td>
-<td><a class=" btn-link" href="/manager/show_table/?t=city&region_id='.$region_id.'">'.$region_name.'</a></td>
+<td><a class=" btn-link" href="'.Route::$url.'&region_id='.$region_id.'">'.$region_name.'</a></td>
     </tr>';}?>
         </tbody>
     </table>

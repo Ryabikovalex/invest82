@@ -32,8 +32,8 @@ if (isset($success))
 <ul class="pagination justify-content-center">
     <?php $dp = (isset($from)and$from>0) ? '' : 'disabled';
     $dn = (isset($to) and $to>1) ? '' : 'disabled'?>
-    <li class="page-item <?=$dp?>"><a class="page-link" href="<?=Route::$url?>/?t=<?=$_GET['t']?>&page=<?= $from?>"> ← Назад</a></li>
-    <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>/?t=<?=$_GET['t']?>&page=<?= $to?>">Вперед →</a></li>
+    <li class="page-item <?=$dp?>"><a class="page-link" href="<?=Route::$url?>&page=<?= $from?>"> ← Назад</a></li>
+    <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>&page=<?= $to?>">Вперед →</a></li>
 </ul>
 
 <p>Клик по статусу региона переключает его.</p>
@@ -57,11 +57,11 @@ if (isset($success))
         <?php foreach ($table as $k => $arr)
         {
             list( $id, $name, $header, $translit, $is_enabled, $cities, $brokers, $buyers) = $arr;
-            $enable_url = Route::$url.'/?t='.$_GET['t'].'&action=toggle&entry='.$id;
+            $enable_url = Route::$url.'&action=toggle&entry='.$id;
             $enable_url.= (isset($_GET['page'])) ? '&page='.$_GET['page'] : '';
             $enable = ($is_enabled == 0) ? '<a href="'.$enable_url.'" class="badge badge-danger">Отключен</a>' : '<a href="'.$enable_url.'" class="badge badge-success">Активен</a>';
             echo '<tr>
-<td><a class=" btn-link" href="/manager/edit/?t=region&entry='.$id.'">Редактировать</a> <a class=" btn-link" href="'.Route::$url.'/?t=city&region_id='.$id.'">Показать города</a></td>
+<td><a class=" btn-link" href="/manager/edit/?t=region&entry='.$id.'">Редактировать</a> <a class=" btn-link" href="'.$_SERVER['PATH_INFO'].'?t=city&region_id='.$id.'">Показать города</a></td>
 <td>'.$id.'</td>
 <td>'.$enable.'</td>
 <td>'.$name.'</td>
