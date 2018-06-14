@@ -2,18 +2,30 @@
 final class Route
 {
     public static $arg = [];
+    /**
+     * @var string URL без GET
+     */
 	public static $url = '/';
 	private static $key_word = [ 'region', 'city', 'cat', 'subcat'];
+
+    /**
+     * @param $arr array Массив URL
+     * @param $start_elem int начальная позиция
+     * @param $key int ключ аргумента
+     */
     private static function setParams($arr, $start_elem, $key)
     {
         $arr_size = count($arr);
         $i = $start_elem;
+        $a = [];
+        $k = 0;
         while ($i < $arr_size and !in_array($arr[$i], self::$key_word) and $arr[$i] != '')
         {
-            self::$arg[$key] = [];
-            array_push(self::$arg[$key], $arr[$i]);
+            $a[$k] = $arr[$i];
             $i++;
+            $k++;
         }
+        self::$arg[$key] = $a;
     }
 
     /**

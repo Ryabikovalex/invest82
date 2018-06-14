@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta lang="ru">
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<meta lang="ru">
-	<title><?=$header?></title>
+	<title><?=$header ?? 'Купить бизнес в России'?></title>
+
+    <!--<link rel="stylesheet" href="/assets/css/index.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap-grid.min.css">
 </head>
 <body>
 	<header>
+        <h1>
+            <?=$header ?? 'Купить бизнес в России'?>
+        </h1>
 	</header>
 	<main>
-        <h1>
-            <?=$header?>
-        </h1>
+        <nav>
+
+        </nav>
+        <div>
+            <?=$filters ?? ''?>
+        </div>
 		<?php include $content_view ?>
 	</main>
 	<footer>

@@ -1,3 +1,35 @@
+<div>
+    Отсортировать по цене: <a href="<?=Route::$url?>/?sort_by=cost&sort=1">Дороже</a> - <a href="<?=Route::$url?>/?sort_by=cost&sort=-1">Дешевле ↑</a>
+</div>
+<div>
+    `id`, `name`, `added`, `cost`, `category_id`, `city_id`,  `status`, `images`, `is_conf`, `CY`.`cityName`, `CY`.`cityTranslit`, `CY`.`cityE`, `R`.`regTranslit`, `R`.`regE`, `SC`.`scTranslit`, `SC`.`scE`, `CT`.`ctE`, `CT`.`ctTranslit`
+<?php if ( !is_array($items) or count($items) == 0){?>
+    <p>Ничего ненайдено</p>
+<?php }else{foreach ( $items as $k => $param){
+    list($id, $name, $added, $cost, ,, $status, $images, $conf,  $cityName, $cityTranslit, , $regTranslit, , $subcatTranslit, , , $catTranslit) = $param;
+?>
+<div class="list-item" style="display: inline-block;">
+    <table border="1">
+        <tr>
+            <th><?=$cityName?></th>
+            <th><a href="/shop/product/<?=$id?>"><?=$name?></a></th>
+        </tr>
+        <tr>
+            <td><?=format_cost($cost)?></td>
+            <td><?=format_date($added)?></td>
+        </tr>
+    </table>
+</div>
+<?php }}?>
+</div>
+<div>
+<?php if (isset($from)  and $from>0){?>
+	<a href="<?=Route::$url?>/?page=<?= $from?>"> ← Назад</a>
+    <?php }
+if (isset($to) and $to>1){?>
+    <a href="<?=Route::$url?>/?page=<?= $to?>">Вперед →</a>
+<?php }?>
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const { pathname } = window.location;
@@ -42,7 +74,7 @@
                 }
             }
 
-            let cat_ch_r = [].filter.call(form.querySelectorAll('input[name=\"cat\"]') , function (c) {
+            let cat_ch_r = [].filter.call(form.querySelectorAll('input[name="cat"]') , function (c) {
                 if (c.checked)
                     return c;
             })[0];
@@ -68,34 +100,3 @@
         };
     });
 </script>
-<div>
-    Отсортировать по цене: <a href="<?=Route::$url?>/?sort_by=cost&sort=1">Дороже</a> - <a href="<?=Route::$url?>/?sort_by=cost&sort=-1">Дешевле ↑</a>
-</div>
-<div>
-<?php if (is_array($items) and count($items) == 0){?>
-    <p>Empty <?=$_SERVER['HTTP_CONNECTION']?></p>
-<?php }else{foreach ( $items as $k => $param){
-    list($id, $name, $cost, $catTranslit, $subcatName, $subcatTranslit, $cityName, $cityTranslit) = array_values($param);
-?>
-<div class="list-item" style="display: inline-block;">
-    <table border="1">
-        <tr>
-            <th><?=$subcatName?></th>
-            <th><a href="/shop/product/<?=$id?>"><?=$name?></a></th>
-        </tr>
-        <tr>
-            <td><?=$cost?></td>
-            <td<?=$cityName?></td>
-        </tr>
-    </table>
-</div>
-<?php }}?>
-</div>
-<div>
-<?php if (isset($from)  and $from>0){?>
-	<a href="<?=Route::$url?>/?page=<?= $from?>"> ← Назад</a>
-    <?php }
-if (isset($to) and $to>1){?>
-    <a href="<?=Route::$url?>/?page=<?= $to?>">Вперед →</a>
-<?php }?>
-</div>

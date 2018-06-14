@@ -1,423 +1,51 @@
 <?php
 class model_shop extends model
 {
-    public function getList( int $from = 0,int $to = 49,array $ctg, ...$params)
+    public function getList( int $from = 0,int $to = 49, $arg, ...$params)
     {
         list( $_sort) = $params;
-        $sql = 'SELECT
-    `products`.`id`,
-    `products`.`name`,
-    `products`.`cost`,
-    `B`.`catTranslit`,
-    `B`.`name` AS `subcatName`,
-    `B`.`subcatTranslit`,
-    `A`.`name` AS `cityName`,
-    `A`.`translit` AS `cityTranslit`
-FROM
-    `products`
-LEFT JOIN
-    (
-    SELECT
-        `cities`.`id`,
-        `cities`.`name`,
-        `cities`.`translit`
-    FROM
-        `cities`
-) `A`
-ON
-    `products`.`city` = `A`.`id`
-LEFT JOIN
-    (
-    SELECT
-        `categories`.`id`,
-        `categories`.`name`,
-        `categories`.`translit` AS `subcatTranslit`,
-        `categories`.`is_enabled` AS `subcatEnabled`,
-        `C`.`translit` AS `catTranslit`,
-        `C`.`is_enabled` AS `catEnabled`
-    FROM
-        `categories`
-    LEFT JOIN
-        (
-        SELECT
-            `categories`.`id`,
-            `categories`.`translit`,
-            `categories`.`is_enabled`
-        FROM
-            `categories`
-        WHERE
-            `categories`.`level` = 0
-    ) `C`
-ON
-    `categories`.`parent` = `C`.`id`
-WHERE
-    `categories`.`is_enabled` = 1 AND `C`.`is_enabled` = 1 AND `categories`.`level` > 0
-) `B`
-ON
-    `products`.`category` = `B`.`id`
-WHERE
-    `B`.`catEnabled` = 1 AND `B`.`subcatEnabled` = 1 ';
+        $sql = 'SELECT `id`, `name`, `added`, `cost`, `category_id`, `city_id`,  `status`, `images`, `is_conf`, `CY`.`cityName`, `CY`.`cityTranslit`, `CY`.`cityE`, `R`.`regTranslit`, `R`.`regE`, `SC`.`scTranslit`, `SC`.`scE`, `CT`.`ctE`, `CT`.`ctTranslit` FROM `products` LEFT JOIN (SELECT `id` AS `cityId`, `name` AS `cityName`, `region_id`, `translit` AS `cityTranslit`, `is_enabled` AS `cityE` FROM `city` WHERE `country_id`=3159) `CY` ON `city_id`=`CY`.`cityId` LEFT JOIN (SELECT `id` AS `regId`, `translit` AS `regTranslit`, `is_enabled` AS `regE` FROM `region` WHERE `country_id`=3159 ) `R` ON `CY`.`region_id`=`R`.`regId` LEFT JOIN (SELECT `id` AS `scId`, `translit` as `scTranslit`, `is_enabled` AS `scE`,`parent` FROM `categories` WHERE `parent`!=0) `SC` ON `category_id`=`SC`.`scId` LEFT JOIN ( SELECT `id` AS `ctId`, `is_enabled` AS `ctE`, `translit` AS `ctTranslit` FROM `categories` WHERE `parent`=0) `CT` ON `SC`.`parent`=`CT`.`ctId`';
         $payload = [];
 
-        /*switch (count($ctg))
+        $sql .= ' WHERE `CY`.`cityE`=1 AND `R`.`regE`=1 AND `SC`.`scE`=1 AND `CT`.`ctE`=1 ';
+        if (count($arg) > 0)
         {
-            case 1:
-                if($ctg[0] !== '')
+            foreach ($arg as $k =>$value)
+            {
+                switch ($k)
                 {
-
-                    /*$sql = 'SELECT
-                        `products`.`id`,
-                        `products`.`name`,
-                        `products`.`cost`,
-                        `C`.`translit` AS `catTranslit`,
-                        `B`.`name` AS `subcatName`,
-                        `B`.`translit` AS `subcatTranslit`,
-                        `A`.`name` AS `cityName`,
-                        `A`.`translit` AS `cityTranslit`
-                    FROM
-                        `products`
-                    LEFT JOIN
-                        (
-                        SELECT
-                            `cities`.`id`,
-                            `cities`.`name`,
-                            `cities`.`translit`
-                        FROM
-                            `cities`
-                    ) `A`
-                    ON
-                        `products`.`city` = `A`.`id`
-                    LEFT JOIN
-                        (
-                        SELECT
-                            `categories`.`id`,
-                            `categories`.`name`,
-                            `categories`.`translit`,
-                            `categories`.`is_enabled`
-                        FROM
-                            `categories`
-                    ) `B`
-                    ON
-                        `products`.`category` = `B`.`id`
-                    LEFT JOIN
-                        (
-                        SELECT
-                            `categories`.`id`,
-                            `categories`.`translit`,
-                            `categories`.`is_enabled`
-                        FROM
-                            `categories`
-                        WHERE
-                            `categories`.`translit` = ?
-                    ) `C`
-                    ON
-                        `products`.`category` = `B`.`id`
-                    WHERE
-                        `C`.`is_enabled` = 1 AND `B`.`is_enabled` = 1 AND `products`.`category` IN(
-                        SELECT
-                            `categories`.`id`
-                        FROM
-                            `categories`
-                        WHERE
-                            `categories`.`parent` IN(
-                            SELECT
-                                `categories`.`id`
-                            FROM
-                                `categories`
-                            WHERE
-                                `categories`.`is_enabled` = 1 AND `categories`.`translit` = ?
-                        )
-                    ) ';
-                    $sql = 'SELECT
-    `products`.`id`,
-    `products`.`name`,
-    `products`.`cost`,
-    `B`.`catTranslit`,
-    `B`.`name` AS `subcatName`,
-    `B`.`subcatTranslit`,
-    `A`.`name` AS `cityName`,
-    `A`.`translit` AS `cityTranslit`
-FROM
-    `products`
-LEFT JOIN
-    (
-    SELECT
-        `cities`.`id`,
-        `cities`.`name`,
-        `cities`.`translit`
-    FROM
-        `cities`
-) `A`
-ON
-    `products`.`city` = `A`.`id`
-LEFT JOIN
-    (
-    SELECT
-        `categories`.`id`,
-        `categories`.`name`,
-        `categories`.`translit` AS `subcatTranslit`,
-        `categories`.`is_enabled` AS `subcatEnabled`,
-        `C`.`translit` AS `catTranslit`,
-        `C`.`is_enabled` AS `catEnabled`
-    FROM
-        `categories`
-    LEFT JOIN
-        (
-        SELECT
-            `categories`.`id`,
-            `categories`.`translit`,
-            `categories`.`is_enabled`
-        FROM
-            `categories`
-        WHERE
-            `categories`.`level` = 0
-    ) `C`
-ON
-    `categories`.`parent` = `C`.`id`
-WHERE
-    `categories`.`is_enabled` = 1 AND `C`.`is_enabled` = 1 AND `categories`.`level` > 0
-) `B`
-ON
-    `products`.`category` = `B`.`id`
-WHERE
-    `B`.`catEnabled` = 1 AND `B`.`subcatEnabled` = 1 AND `B`.`catTranslit`=?';
-                    $payload = [$ctg[0]];
+                    case 'region':
+                        $column = '`R`.`regTranslit`';
+                        break;
+                    case 'city':
+                        $column = '`CY`.`cityTranslit`';
+                        break;
+                    case 'cat':
+                        $column = '`CT`.`ctTranslit`';
+                        break;
+                    case 'subcat':
+                        $column = '`SC`.`scTranslit`';
+                        break;
                 }
-                break;
-            case 2:
-                /*$sql = 'SELECT
-    `products`.`id`,
-    `products`.`name`,
-    `products`.`cost`,
-    `C`.`translit` AS `catTranslit`,
-    `B`.`name` AS `subcatName`,
-    `B`.`translit` AS `subcatTranslit`,
-    `A`.`name` AS `cityName`,
-    `A`.`translit` AS `cityTranslit`
-FROM
-    `products`
-LEFT JOIN
-    (
-    SELECT
-        `cities`.`id`,
-        `cities`.`name`,
-        `cities`.`translit`
-    FROM
-        `cities`
-) `A`
-ON
-    `products`.`city` = `A`.`id`
-LEFT JOIN
-    (
-    SELECT
-        `categories`.`id`,
-        `categories`.`name`,
-        `categories`.`translit`,
-        `categories`.`is_enabled`,
-        `categories`.`parent`
-    FROM
-        `categories`
-) `B`
-ON
-    `products`.`category` = `B`.`id`
-LEFT JOIN
-    (
-    SELECT
-        `categories`.`id`,
-        `categories`.`translit`,
-        `categories`.`is_enabled`
-    FROM
-        `categories`
-    WHERE
-        `categories`.`translit` = ?
-) `C`
-ON
-    `B`.`parent` = `C`.`id`
-WHERE
-    `C`.`is_enabled` = 1 AND `B`.`is_enabled` = 1 AND `products`.`city` = (SELECT `cities`.`id` FROM `cities` WHERE `cities`.`translit`=?)';
-                $sql = 'SELECT
-    `products`.`id`,
-    `products`.`name`,
-    `products`.`cost`,
-    `B`.`catTranslit`,
-    `B`.`name` AS `subcatName`,
-    `B`.`subcatTranslit`,
-    `A`.`name` AS `cityName`,
-    `A`.`translit` AS `cityTranslit`
-FROM
-    `products`
-LEFT JOIN
-    (
-    SELECT
-        `cities`.`id`,
-        `cities`.`name`,
-        `cities`.`translit`
-    FROM
-        `cities`
-) `A`
-ON
-    `products`.`city` = `A`.`id`
-LEFT JOIN
-    (
-    SELECT
-        `categories`.`id`,
-        `categories`.`name`,
-        `categories`.`translit` AS `subcatTranslit`,
-        `categories`.`is_enabled` AS `subcatEnabled`,
-        `C`.`translit` AS `catTranslit`,
-        `C`.`is_enabled` AS `catEnabled`
-    FROM
-        `categories`
-    LEFT JOIN
-        (
-        SELECT
-            `categories`.`id`,
-            `categories`.`translit`,
-            `categories`.`is_enabled`
-        FROM
-            `categories`
-        WHERE
-            `categories`.`level` = 0
-    ) `C`
-ON
-    `categories`.`parent` = `C`.`id`
-WHERE
-    `categories`.`is_enabled` = 1 AND `C`.`is_enabled` = 1 AND `categories`.`level` > 0
-) `B`
-ON
-    `products`.`category` = `B`.`id`
-WHERE
-    `B`.`catEnabled` = 1 AND `B`.`subcatEnabled` = 1 AND `B`.`catTranslit`=? AND `A`.`translit`=?';
-                $payload = [ $ctg[0], $ctg[1]];
-                break;
-            case 3:
-                $sql = 'SELECT
-    `products`.`id`,
-    `products`.`name`,
-    `products`.`cost`,
-    `B`.`catTranslit`,
-    `B`.`name` AS `subcatName`,
-    `B`.`subcatTranslit`,
-    `A`.`name` AS `cityName`,
-    `A`.`translit` AS `cityTranslit`
-FROM
-    `products`
-LEFT JOIN
-    (
-    SELECT
-        `cities`.`id`,
-        `cities`.`name`,
-        `cities`.`translit`
-    FROM
-        `cities`
-) `A`
-ON
-    `products`.`city` = `A`.`id`
-LEFT JOIN
-    (
-    SELECT
-        `categories`.`id`,
-        `categories`.`name`,
-        `categories`.`translit` AS `subcatTranslit`,
-        `categories`.`is_enabled` AS `subcatEnabled`,
-        `C`.`translit` AS `catTranslit`,
-        `C`.`is_enabled` AS `catEnabled`
-    FROM
-        `categories`
-    LEFT JOIN
-        (
-        SELECT
-            `categories`.`id`,
-            `categories`.`translit`,
-            `categories`.`is_enabled`
-        FROM
-            `categories`
-        WHERE
-            `categories`.`level` = 0
-    ) `C`
-ON
-    `categories`.`parent` = `C`.`id`
-WHERE
-    `categories`.`is_enabled` = 1 AND `C`.`is_enabled` = 1 AND `categories`.`level` > 0
-) `B`
-ON
-    `products`.`category` = `B`.`id`
-WHERE
-    `B`.`catEnabled` = 1 AND `B`.`subcatEnabled` = 1 AND `B`.`catTranslit`=? AND `A`.`translit`=? AND `B`.`subcatTranslit`=?';
-                $payload = [ $ctg[0], $ctg[1], $ctg[2]];
-                break;
-        }*/
 
-        if(isset($_sort) and count($_sort)) {
-            $sort = ' ORDER BY `'.array_values($_sort)[0].'` ';
-            $sort .= ' ';
-            if (array_keys($_sort)[0] == 1)
-            {
-                $sort .= 'DESC';
-            }else
-            {
-                $sort .= 'ASC';
+                $v = count($value) > 1 ? ' IN ("'.implode('", "', $value).'") ' : '="'.$value[0].'"';
+                $sql.= ' AND '.$column.$v;
             }
-
-        }else
-        {
-            $sort = ' ORDER BY `name` DESC';
         }
 
-        $sql .= ' {sort} LIMIT {from}, {to}';
-        $sql = str_replace('{sort}', $sort, $sql);
+        $sql .= ' ORDER BY `added` DESC';
+
+        var_dump($sql, $arg);
+
+        $sql .= ' LIMIT {from}, {to}';
         $sql = str_replace('{from}', $from, $sql);
         $sql = str_replace('{to}', $to, $sql);
+        $t0 = microtime();
         $stmt = DataBase::run($sql, $payload);
-
-        return $stmt->fetchAll();
-    }
-
-    public function getHeader( array $params = [])
-    {
-        if(count($params) == 0)
-        {
-
-        }else
-        {
-
-        }
-
-        return;
-    }
-
-    public function getFilters ( string $param, int $strict)
-    {
-        $sql = 'SELECT `name`, `translit` FROM ';
-        switch ($param)
-        {
-            case 'region':
-                $sql .= '`region`';
-                break;
-            case 'city':
-                $sql .= '`city`';
-                break;
-            case 'category':
-                $sql .= '`categories` WHERE `parent`=0';
-                break;
-            case 'subcategory':
-                $sql .= '`categories` WHERE `parent`!=0';
-                break;
-        }
-        if( !in_array($param, ['category', 'subcategory']))
-        {
-            if ( $strict === 1)
-            {
-                $sql .= ' WHERE `is_enabled`=1';
-                $sql .= ' AND  `country_id`=3159';
-            }else
-            {
-                $sql .= 'WHERE `country_id`=3159';
-            }
-        }
-        $sql .= ' ORDER BY `name` ASC';
-        $result = Database::run($sql, [])->fetchAll(PDO::FETCH_NUM);
-        return $result;
+        $t1 = microtime();
+        $fetch = $stmt->fetchAll(PDO::FETCH_NUM);
+        var_dump($t1-$t0);
+        return $fetch;
     }
 
     public function add_buyer( array $data)

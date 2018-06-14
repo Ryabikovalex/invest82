@@ -22,6 +22,7 @@ class controller_shop extends controller
         $data['from'] = $page-1;
         $data['to'] = $page+1;
 
+        $data['header'] = semanticCore::getHeader( Route::$arg);
         $data['items'] = $this->model->getList( $from, $to, Route::$arg, $sort);
 
         $this->call_view( 'list_view.php', $data);
