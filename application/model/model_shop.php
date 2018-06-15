@@ -35,16 +35,13 @@ class model_shop extends model
 
         $sql .= ' ORDER BY `added` DESC';
 
-        var_dump($sql, $arg);
+        //var_dump($sql, $arg);
 
         $sql .= ' LIMIT {from}, {to}';
         $sql = str_replace('{from}', $from, $sql);
         $sql = str_replace('{to}', $to, $sql);
-        $t0 = microtime();
         $stmt = DataBase::run($sql, $payload);
-        $t1 = microtime();
         $fetch = $stmt->fetchAll(PDO::FETCH_NUM);
-        var_dump($t1-$t0);
         return $fetch;
     }
 

@@ -5,7 +5,7 @@
     `id`, `name`, `added`, `cost`, `category_id`, `city_id`,  `status`, `images`, `is_conf`, `CY`.`cityName`, `CY`.`cityTranslit`, `CY`.`cityE`, `R`.`regTranslit`, `R`.`regE`, `SC`.`scTranslit`, `SC`.`scE`, `CT`.`ctE`, `CT`.`ctTranslit`
 <?php if ( !is_array($items) or count($items) == 0){?>
     <p>Ничего ненайдено</p>
-<?php }else{foreach ( $items as $k => $param){
+<?php }else{var_dump($items[0]);    foreach ( $items as $k => $param){
     list($id, $name, $added, $cost, ,, $status, $images, $conf,  $cityName, $cityTranslit, , $regTranslit, , $subcatTranslit, , , $catTranslit) = $param;
 ?>
 <div class="list-item" style="display: inline-block;">
