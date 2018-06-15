@@ -5,7 +5,7 @@ class semanticCore {
     {
         $file = '';
         $file = file_get_contents(PATH['json_user'].$folder.'/'.$from.'.json');
-        $arr = json_decode($file, true, 3, JSON_INVALID_UTF8_IGNORE);
+        $arr = json_decode($file, true, 3);
         $chunk = 0;
         $i = 0;
         while ($chunk == 0 and $i < count($arr))

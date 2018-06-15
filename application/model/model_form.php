@@ -1,6 +1,32 @@
 <?php
 class model_form extends model{
 
+    public function submit_biznes ( $payload)
+    {
+        $sql_add = 'INSERT INTO `customers`(`fio`, `number`, `email`) VALUES ( ?, ?, ?)';
+        $sql_find = 'SELECT `id` FROM `customers` WHERE `fio`=?';
+        $sql1 = 'INSERT INTO `submit_products`( `name`, `customer_id`, `cost`, `earn_p_m`, `region_id`, `address`, `about`, `images`, `added`, `is_conf`) VALUES ( ?, ?, ?, ?, ?, ?, ?, "[]", NOW(), ?)';
+
+        $fetch = Database::run($sql_find, [$payload['fio']])->fetchColumn();
+
+        if ($fetch != '')
+        {
+            $customer_id = $fetch;
+        }else
+        {
+            $email = $payload['email'] ?? '';
+            Database::run($sql_add, [ $payload['fio'], $payload['number'], $email]);
+            $customer_id = Database::lastInsertId();
+        }
+
+        $is_conf = ( isset($payload['is_conf']) and $payload['is_conf']=='on') ? 1 : 0;
+
+        $stmt = Database::run($sql1, [ $payload['name'], $customer_id, $payload['cost'], $payload['earn_p_m'], $payload['region'], $payload['address'], $payload['about'], $is_conf ]);
+        var_dump($customer_id, $stmt->rowCount());
+        return $stmt;
+    }
+
+
     /**
      * Проверка иконки пользователя перед загрузкой на сервер
      * @param array $icon Данные об иконке
@@ -51,219 +77,5 @@ class model_form extends model{
 		$query = 'UPDATE user SET user_icon=? WHERE user_login=?';
 		$res = DataBase::run($query, ["def", $login]);
 	}
-	
-	
-    /**
-     * Проводит авторизацию пользователя
-     * @param string $log электронная почта или логин пользователя
-     * @param string $password пароль
-     *
-     * @return array $data возвращаем данные
-     */
-	public function sign_in(string $log, string $password) : array
-	{
-		$data['header'] = 'Авторизация';
-		if (preg_match('/^((([0-9A-Za-z]{1}[-0-9A-z\.]{1,}[0-9A-Za-z]{1})|([0-9А-Яа-я]{1}[-0-9А-я\.]{1,}[0-9А-Яа-я]{1}))@([-A-Za-z]{1,}\.){1,2}[-A-Za-z]{2,})$/u', $log))
-		{
-		    $str = 'user_email';
-        }else
-        {
-            $str = 'user_login';
-        }
-		$query = 'SELECT user_id, user_login, user_email, user_activation, user_access FROM user WHERE '.$str.'=? AND user_password=?';
-		$result = DataBase::run($query, [$log, $password])->fetch(PDO::FETCH_NUM);
-		list( $id, $login, $email, $activate, $access) = $result;
-		if( !isset($id)){
-			$data['login_status'] = 'access_denied';
-		}else{
-			if($activate == 1){
-				$data['login_status'] = 'access_granted';
-				$_SESSION['uh'] = new user($id, $login, $email, $access);
-			}elseif($activate == 0){
-				$data['login_status'] = 'access_not_activated';
-			}else{
-			    $data['login_status'] = 'access_locked';
-            }
-		}
-		return $data;
-	}
-
-    /**
-     * Выход пользователя с сайта
-     * @return array $data
-     */
-	public function user_exit() : array
-    {
-		$data['header'] = 'Выход';
-		$data['login_status'] = '';
-		unset($_SESSION['uh']);
-		unset($_SESSION['PHPSESSID']);
-        session_destroy();
-		session_write_close();
-		return $data;
-	}
-
-	/**
-     * Создаем нового пользователя
-     * @param array $user
-     * В $user лежит данные нового пользователя
-     * @return array $data
-     */
-	public function set_new_user(array $user ) : array
-    {
-        $data['header'] = 'Регистрация';
-        //Проверки введенных данных
-        if($user['password0'] !== $user['password1'])
-        {
-            $data['error']['password'] = 'Пароли не совпадают';
-        }else
-        {
-			$valid = $this->validate_password($user['password0']);
-            if(is_array($valid))
-			{
-				$data['error']['password'] = $valid;
-			}
-        }
-        $query1 = 'SELECT user_id FROM user WHERE user_login=?';
-        $query2 = 'SELECT user_id FROM user WHERE user_email=?';
-
-        $result = DataBase::run($query1, [$user['login']])->fetchAll();
-        if( count($result) != 0)
-        {
-            $data['error']['login'] = 'Логин уже занят';
-        }
-        $result = DataBase::run($query2, [$user['email']])->fetchAll();
-        if( count($result) != 0)
-        {
-            $data['error']['email'] = 'Данная почту уже зарегистрированна на сайте';
-        }
-		if(isset($user['icon']) and !empty($user['icon']))
-		{
-			$data = array_merge($data, $this->upload_icon($user['icon'], $user['login']) );
-			$image = false;
-		}else{
-			$data['icon'] = "def";
-		}
-			
-		if( key_exists( 'error', $data) === false or empty($data['error']) )
-        {
-            $query3 = "INSERT INTO user( user_login, user_email, user_password, user_icon, user_access, user_activation, user_registry) VALUES ( ?, ?, ?, ?, ?, ?, NOW() )";
-			$arr = [$user['login'], $user['email'], md5(md5($user['password0'])), $data['icon'], USER['default_access'], USER['default_activation']];
-            $result = DataBase::run($query3, $arr);
-			if( $result == true) 
-			{
-                $data['success'] = 'Письмо с потверждением отправлено на вашу электронную почту';
-				
-				if( isset($image) and $image === false)
-				{
-					$this->set_image_default($user['login']);
-				}
-				
-                //var_dump(mail($user['email'], 'Activate your account', $message));
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * @param  array $user авторизированный пользовател
-     * @return array $data массив ошибок
-     */
-    public function change_profile(array $user)
-    {
-        $query = 'SELECT user_id FROM user WHERE user_password=? AND user_login=?';
-        $query1 = 'SELECT user_id FROM user WHERE user_email=?';
-        $query2 = 'UPDATE user SET user_email=? WHERE user_id=?';
-		$data['error'] = null;
-        
-		if($result = DataBase::run($query, array($user['password'], $_SESSION['uh']->login))) {
-            if (isset($user['email'])) {
-                if ($user['email'] !== $_SESSION['uh']->getEmail()) {
-                    if (count(DataBase::run($query1, array($user['email']))->fetchAll()) == 0) {
-                        if (DataBase::run($query2, array($user['email'], $_SESSION['uh']->getId()))) {
-                            $data['success']['email'] = 'Ваша почта изменена';
-                            $_SESSION['uh']->setEmail($user['email']);
-                        } else {
-                            $data['error']['email'] = 'Не удалось обновить информацию.';
-                        }
-                    } else {
-                        $data['error']['email'] = 'Новая почта уже зарегистрирована';
-                    }
-                } else {
-                    $data['error']['email'] = 'Новая почта не должна совпадать со старой';
-                }
-            }
-            if (isset($user['icon']))
-            {
-                $data = array_merge($data, $this->Upload_icon($user['icon'], $_SESSION['uh']->login));
-            }
-        }else{
-            $data['error']['password'] = 'Неправильный пароль';
-        }
-        $data['header'] = 'Изменение профиля';
-        return $data;
-    }
-
-    /**
-     * @param array $user данные введенные авторизированным пользователем
-     * @return array $data список ошибок
-     */
-    public function change_password(array $user)
-    {
-        $query = 'SELECT user_id FROM user WHERE user_password=? AND user_login=?';
-        $data['error'] = null;
-        $result = DataBase::run($query, array($user['old_pass'], $_SESSION['uh']->login))->fetchAll();
-        if(count($result) == 1) {
-            if($user['password0'] == $user['password1']) {
-                $data['error']['password'] = $this->validate_password($user['password0']);
-                if (is_null($data['error']['password'])) {
-                    $query = 'UPDATE user SET user_password="' . md5(md5($user['password0'])) . '" WHERE user_id="' . $result[0][0] . '"';
-                    if (parent::$DBH->query($query))
-                    {
-                        $data['success']['password'] = 'Пароль успешно изменен';
-                    }else{
-                        $data['error']['password'] = 'Что-то пошло не так';
-                    }
-                }
-            }else
-            {
-                $data['error']['password'] = 'Пароли не совпадают';
-            }
-        }else{
-            $data['error']['old_pass'] = 'Неправильный старый пароль';
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param string $password пароль на проверку
-     * @return string $data
-     */
-    private function validate_password( string $password)
-    {
-        $data = null;
-        if (count_chars($password) < 8  )
-        {
-            $data[] = 'Слишком короткий пароль';
-        }elseif (count_chars($password) < 30  )
-        {
-            $data[] = 'Слишком Длинный пароль';
-        }
-
-        if(preg_match('/\S+/ius', $password))
-        {
-            if(!preg_match('/[A-Z]+/ius', $password)){
-                $data[] = 'Пароль должен содержать прописную букву';
-            }
-            if(!preg_match('/\d+/ius', $password)){
-                $data[] = 'Пароль должен содержать цифру';
-            }
-        }else{
-            $data[] = 'Пароль не может содержать пустые символы';
-        }
-
-        return $data;
-    }
 }
 
