@@ -20,6 +20,8 @@
         }
         ?>
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <label for="inputName" class="sr-only">Login</label>
+        <input id="inputName" class="form-control" name="name" placeholder="Name" required type="text"><br/>
         <label for="inputPassword" class="sr-only">Password</label>
         <input id="inputPassword" class="form-control" name="auth" placeholder="Password" required type="password"><br/>
 

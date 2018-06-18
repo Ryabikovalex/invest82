@@ -106,9 +106,10 @@ class controller_manager extends controller
         if (isset($_POST['auth']) and hash( 'sha256',htmlspecialchars($_POST['auth'])) === '36f50957f5e0b6ee3ef455674da35a86667f3314209dc1514c510fe95e840831')
         {
             $data['success'] = 1;
-            if( !isset($_COOKIE['auth']) )
+            if( !isset($_SERVER['auth']) )
             {
                 $_SESSION['auth'] = hash( 'sha256',htmlspecialchars($_POST['auth']));
+                $_SESSION['auth'] = $_POST['name'];
             }
         }
         View::generate('', $data, 'manager/login_view.php');

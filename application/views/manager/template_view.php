@@ -14,7 +14,7 @@
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/manager/">Панель администратора</a>
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-            <a class="nav-link">Invest82.ru</a>
+            <?=$_SESSION['name']?><a class="nav-link">Invest82.ru</a>
         </li>
     </ul>
 </nav>
