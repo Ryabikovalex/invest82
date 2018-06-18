@@ -28,24 +28,12 @@ class controller_shop extends controller
         $this->call_view( 'list_view.php', $data);
     }
 
-    public function action_add_buyer()
+    public function action_product()
     {
-        $data['header'] = 'Оставить заявку | invest82.ru';
-        if (isset($_POST) and count($_POST) > 0)
-        {
-            $payload = [];
-            foreach ($_POST as $k => $v)
-            {
-                $payload[ htmlspecialchars($k) ] = htmlspecialchars($v);
-            }
-            $data['form'] = $this->model->add_buyer($payload);
-        }else
-        {
-            $data['region'] = $this->model->getFilters('region', 0);
-            $data['cat'] = $this->model->getFilters( 'category', 0);
-        }
+        $data['product'] = $this->model->getEntry( Route::$arg['i']);
 
-        $this->call_view('add_buyer.php', $data);
+        $data['header'] = $data['product'][0];
+        $this->call_view('product_view.php', $data);
     }
 
 }

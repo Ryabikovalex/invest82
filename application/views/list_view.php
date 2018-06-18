@@ -51,19 +51,20 @@ if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
     `id`, `name`, `added`, `cost`, `category_id`, `city_id`,  `status`, `images`, `is_conf`, `CY`.`cityName`, `CY`.`cityTranslit`, `CY`.`cityE`, `R`.`regTranslit`, `R`.`regE`, `SC`.`scTranslit`, `SC`.`scE`, `CT`.`ctE`, `CT`.`ctTranslit`
 <?php if ( !is_array($items) or count($items) == 0){?>
     <p>Ничего ненайдено</p>
-<?php }else{var_dump($items[0]);    foreach ( $items as $k => $param){
+<?php }else{  foreach ( $items as $k => $param){
     list($id, $name, $added, $cost, ,, $status, $images, $conf,  $cityName, $cityTranslit, , $regTranslit, , $subcatTranslit, , , $catTranslit) = $param;
 ?>
 <div class="list-item" style="display: inline-block;">
     <table border="1">
         <tr>
             <th><?=$cityName?></th>
-            <th><a href="/shop/product/<?=$id?>"><?=$name?></a></th>
+            <th><a href="/shop/product/i/<?=$id?>"><?=$name?></a></th>
         </tr>
         <tr>
             <td><?=format_cost($cost)?></td>
             <td><?=format_date($added)?></td>
         </tr>
+        <p><?php echo ($is_conf == 1) ? 'Conf' : ''?></p>
     </table>
 </div>
 <?php }}?>

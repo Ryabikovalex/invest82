@@ -6,7 +6,7 @@ final class Route
      * @var string URL без GET
      */
 	public static $url = '/';
-	private static $key_word = [ 'region', 'city', 'cat', 'subcat'];
+	private static $key_word = [ 'region', 'city', 'cat', 'subcat', 'i'];
 
     /**
      * @param $arr array Массив URL

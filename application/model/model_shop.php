@@ -42,4 +42,20 @@ class model_shop extends model
         $fetch = $stmt->fetchAll(PDO::FETCH_NUM);
         return $fetch;
     }
+
+    public function getEntry ( $id)
+    {
+        $sql_p = 'SELECT  `name`, `added`, `cost`, `earn_p_m`, `oborot_p_m`, `rashod_p_m`, `R`.`regName`, `CY`.`cityName`, `address`, `about`, `shtat`, `status`, `images`, `is_conf`, `customer_id`, `BR`.`brName`, `BR`.`brTel` FROM `products` LEFT JOIN (SELECT `id` AS `cityId`, `name` AS `cityName`, `region_id` FROM `city` WHERE `country_id`=3159) `CY` ON `city_id`=`CY`.`cityId` LEFT JOIN (SELECT `id` AS `regId`, `name` AS `regName` FROM `region` WHERE `country_id`=3159 ) `R` ON `CY`.`region_id`=`R`.`regId` LEFT JOIN (SELECT `id` as `brId`, `fio` as `brName`, `number` AS `brTel` FROM `brokers`) `BR` ON `broker_id`=`BR`.`brId` LIMIT 1';
+        $sql_customer = 'SELECT `fio` FROM `customers` WHERE `id`=?';
+
+        $res = Database::run($sql_p, [$id])->fetch(PDO::FETCH_NUM);
+        if ( $res[13] == 0)
+        {
+            $str = Database::run($sql_customer, [$res[14]])->fetch(PDO::FETCH_NUM)[0];
+            $str = substr($str, strpos($str, ' '));
+            $res[] = $str;
+        }
+
+        return $res;
+    }
 }
