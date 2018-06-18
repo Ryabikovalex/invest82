@@ -30,5 +30,21 @@ class controller_form extends controller{
 		$data['header'] = 'Продать бизнес';
 		$this->call_view('form/sell_biznes_view.php', $data );
 	}
+
+	public function action_buy_biznes ()
+    {
+        if( isset($_POST) and count($_POST) > 0)
+        {
+            $arr = [];
+            foreach ($_POST as $k => $v)
+            {
+                $arr[$k] = trim( htmlspecialchars($v) );
+            }
+
+            $data['success'] = $this->model->submit_buyer($arr);
+        }
+        $data['header'] = 'Оставить заявку на покупку бизнеса';
+        $this->call_view('form/buy_biznes_view.php', $data );
+    }
 }
 

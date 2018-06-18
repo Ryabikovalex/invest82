@@ -19,7 +19,7 @@ final class Route
         $i = $start_elem;
         $a = [];
         $k = 0;
-        while ($i < $arr_size and !in_array($arr[$i], self::$key_word) and $arr[$i] != '')
+        while ($i < $arr_size && !in_array($arr[$i], self::$key_word) && $arr[$i] != '')
         {
             $a[$k] = $arr[$i];
             $i++;
@@ -34,7 +34,7 @@ final class Route
 	public static function start()
 	{
         $routes = explode('/', $_SERVER['REQUEST_URI']);
-        if (isset($_GET) and count($_GET) > 0)
+        if (isset($_GET) && count($_GET) > 0)
         {
             array_pop($routes);
         }
@@ -47,19 +47,19 @@ final class Route
         $action_name = 'index';
         $start = 0;
 
-        if ( !empty($routes[1]) and !in_array($routes[1], self::$key_word) )
+        if ( !empty($routes[1]) && !in_array($routes[1], self::$key_word) )
         {
             $start = 2;
             $controller_name = $routes[1];
         }
-        if ( !empty($routes[2])and !in_array($routes[1], self::$key_word)  and !in_array($routes[2], self::$key_word) )
+        if ( !empty($routes[2]) && !in_array($routes[1], self::$key_word) && !in_array($routes[2], self::$key_word) )
         {
             $start = 3;
             $action_name = $routes[2];
         }
         for ($i=$start; $i<$routes_size; $i++)
         {
-            if(!empty($routes[$i]) and in_array( $routes[$i], self::$key_word) )
+            if(!empty($routes[$i]) && in_array( $routes[$i], self::$key_word) )
             {
                 self::setParams($routes, $i+1,  $routes[$i]);
             }
@@ -67,7 +67,7 @@ final class Route
 
         session_start();
         //Запрет на доступ к администрированию
-        if ($controller_name == 'manager' and (!isset($_SESSION['auth']) or $_SESSION['auth'] != '36f50957f5e0b6ee3ef455674da35a86667f3314209dc1514c510fe95e840831') )
+        if ($controller_name == 'manager' && (!isset($_SESSION['auth']) && !isset($_SESSION['name'])) )
         {
             $action_name = 'log_in';
         }

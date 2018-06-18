@@ -1,5 +1,51 @@
+<form name="filter" action="">
+<a href="" id="remove-cat">Сбросить категории</a>
+<div id="cat-container" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+<?php
+if(isset(Route::$arg['cat']) and count(Route::$arg['cat']) == 1)
+{
+    echo '<input name="cat" value="'.Route::$arg['cat'][0].'" checked hidden>';
+    foreach (semanticCore::getSubFilter('cat', Route::$arg['cat'][0]) as $k => $arr)
+    {
+        $checked =  ( isset(Route::$arg['subcat']) && in_array($arr[1], Route::$arg['subcat']) ) ? 'checked': '';
+        echo '<label><input type="checkbox" name="subcat" value="'.$arr[1].'" '.$checked.'>'.$arr[0].'</label>';
+    }
+}else{
+    foreach (semanticCore::getFilter('cat') as $k => $arr)
+    {
+        $checked =  ( isset(Route::$arg['cat']) && in_array($arr[1], Route::$arg['cat']) ) ? 'checked': '';
+        echo '<label><input type="radio" name="cat" value="'.$arr[1].'" '.$checked.'>'.$arr[0].'</label>';
+    }
+}?>
+</div>
+<br/>
+<a href="" id="remove-place">Сбросить города</a>
+<div id="place-container" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+<?php
+if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
+{
+    echo '<input name="region" value="'.Route::$arg['region'][0].'" checked hidden>';
+    foreach (semanticCore::getSubFilter('region', Route::$arg['region'][0]) as $k => $arr)
+    {
+        $checked =  ( isset(Route::$arg['city']) && in_array($arr[1], Route::$arg['city']) ) ? 'checked': '';
+        echo '<label><input type="checkbox" name="city" value="'.$arr[1].'" '.$checked.'>'.$arr[0].'</label>';
+    }
+}else{
+    foreach (semanticCore::getFilter('region') as $k => $arr)
+    {
+        $checked =  ( isset(Route::$arg['region']) &&  in_array($arr[1], Route::$arg['region']) ) ? 'checked': '';
+        echo '<label><input type="radio" name="region" value="'.$arr[1].'" '.$checked.'>'.$arr[0].'</label>';
+    }
+}
+?>
+</div>
+<button id="filter-submit" type="button">Применить фильтры</button>
+</form>
+
+
+
 <div>
-    Отсортировать по цене: <a href="<?=Route::$url?>/?sort_by=cost&sort=1">Дороже</a> - <a href="<?=Route::$url?>/?sort_by=cost&sort=-1">Дешевле ↑</a>
+    Отсортировать по цене: <a href="<?=Route::$url?>/?sort_by=cost&sort=1">Дороже</a> - <a href="<?=Route::$url?>/?sort_by=cost&sort=-1">Дешевле</a>
 </div>
 <div>
     `id`, `name`, `added`, `cost`, `category_id`, `city_id`,  `status`, `images`, `is_conf`, `CY`.`cityName`, `CY`.`cityTranslit`, `CY`.`cityE`, `R`.`regTranslit`, `R`.`regE`, `SC`.`scTranslit`, `SC`.`scE`, `CT`.`ctE`, `CT`.`ctTranslit`
@@ -30,73 +76,4 @@ if (isset($to) and $to>1){?>
     <a href="<?=Route::$url?>/?page=<?= $to?>">Вперед →</a>
 <?php }?>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const { pathname } = window.location;
-        let form = document.forms.filter;
-        let filter_place = document.getElementById('filter-place');
-
-        form.onclick =function (e) {
-            let target = e.target;
-            let span = target.closest('label > span[data-load]');
-            if (!span) return;
-            if (!form.contains(span)) return;
-            let radio = span.parentNode.childNodes[0];
-
-            let div = document.querySelector(`div[data-parent="${radio.value}"]`);
-            filter_place.innerHTML = '';
-            filter_place.innerHTML = div.innerHTML;
-        };
-
-        let filter_sbmt = document.getElementById('filter_sbmt');
-        filter_sbmt.onclick = function (e) {
-            e.preventDefault();
-
-            let pl_ch_r = [].filter.call(form.querySelectorAll('input[name="region"]') , function (c) {
-                if (c.checked)
-                    return c;
-            })[0];
-            let pl_url = '';
-            if (typeof pl_ch_r !== "undefined")
-            {
-                let doc = form.querySelectorAll('input[type="checkbox"][name="city"]');
-
-                let checked = [].filter.call(doc, function (child) { if (child.checked) return child; } );
-                if (checked.length > 0)
-                {
-                    pl_url='/city';
-                    checked.forEach(function (c) {
-                        pl_url += '/' + c.value;
-                    });
-                }else
-                {
-                    pl_url='/region/'+pl_ch_r.value;
-                }
-            }
-
-            let cat_ch_r = [].filter.call(form.querySelectorAll('input[name="cat"]') , function (c) {
-                if (c.checked)
-                    return c;
-            })[0];
-            let cat_url;
-            if (typeof cat_ch_r !== "undefined")
-            {
-                let doc = form.querySelectorAll('input[type="checkbox"][name="scat"][data-parent="'+cat_ch_r.getAttribute('data-id')+'"]');
-
-                let checked = [].filter.call(doc, function (child) { if (child.checked) return child; } );
-                if (checked.length > 0)
-                {
-                    cat_url='/subcat';
-                    checked.forEach(function (c) {
-                        cat_url += '/' + c.value;
-                    });
-                }else
-                {
-                    cat_url='/cat/'+cat_ch_r.value;
-                }
-            }
-            form.action = pathname+pl_url+cat_url;
-            form.submit();
-        };
-    });
-</script>
+<script src="<?='/'.PATH['js'].'filters.js'?>"></script>

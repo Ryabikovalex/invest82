@@ -35,18 +35,11 @@ class model_shop extends model
 
         $sql .= ' ORDER BY `added` DESC';
 
-        //var_dump($sql, $arg);
-
         $sql .= ' LIMIT {from}, {to}';
         $sql = str_replace('{from}', $from, $sql);
         $sql = str_replace('{to}', $to, $sql);
         $stmt = DataBase::run($sql, $payload);
         $fetch = $stmt->fetchAll(PDO::FETCH_NUM);
         return $fetch;
-    }
-
-    public function add_buyer( array $data)
-    {
-
     }
 }

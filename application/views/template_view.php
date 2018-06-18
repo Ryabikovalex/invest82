@@ -22,7 +22,7 @@
                     <a href="/form/sell_biznes">Продать бизнес</a>
                 </li>
                 <li>
-                    <a href="/form/buy_biznes">Купить бизнес</a>
+                    <a href="/form/buy_biznes">Оставить заявку на покупку бизнеса </a>
                 </li>
                 <li>
                     <a href="/about">О нас</a>

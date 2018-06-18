@@ -20,15 +20,14 @@ if (isset($success))
     }
 }
 ?>
-<form action="/form/sell_biznes" method="post">
-    <input type="text" name="name" placeholder="name" required>
+Как только появится новый бизнес по вашему запросу, мнееджер уведомит вас.
+
+<form action="/form/buy_biznes" method="post">
     <input type="text" name="fio" placeholder="fio" required>
-    <input type="text" name="number" placeholder="number">
+    <input type="text" name="number" placeholder="number" required>
     <input type="text" name="email" placeholder="email"><br/>
 
-    <input type="text" name="cost" placeholder="cost" required>
-    <input type="text" name="earn_p_m" placeholder="earn" required><br/>
-    <select name="region" id="region" required>
+    <select name="region" required>
         <?php $json = json_decode( file_get_contents(PATH['json_all'].'region/index.json'), true, 3);
         foreach ($json as $k => $v)
         {
@@ -36,11 +35,15 @@ if (isset($success))
         }
         ?>
     </select>
-    <input type="text" name="address" placeholder="address" required><br/>
-    Расскажите подробнее о бизнесе
+    <select name="cat" required>
+        <?php $json = json_decode( file_get_contents(PATH['json_all'].'cat/index.json'), true, 3);
+        foreach ($json as $k => $v)
+        {
+            echo '<option value="'.$v[0].'" data-payload="'.$v[2].'">'.$v[1].'</option>';
+        }
+        ?>
+    </select><br/>
+    Подробнее о желании купить бизнес<br/>
     <textarea name="about"></textarea>
-    <label>
-        <input type="checkbox" name="is_conf"> Конфидециально
-    </label>
     <input type="submit" value="Submit ">
 </form>

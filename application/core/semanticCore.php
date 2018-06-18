@@ -44,4 +44,28 @@ class semanticCore {
         $h = 'Купить '.$cat.' в '.$place;
         return $h;
     }
+
+    public static function getFilter ( $type)
+    {
+        $file = '';
+        $file = file_get_contents(PATH['json_user'].$type.'/index.json');
+        $arr = json_decode($file, true, 3);
+        foreach ($arr as $k => $param)
+        {
+            list( $res[0], $res[1], ) = array_values($param);
+            yield $res;
+        }
+    }
+
+    public static function getSubFilter ( $type, $param)
+    {
+        $file = '';
+        $file = file_get_contents(PATH['json_user'].$type.'/'.$param.'.json');
+        $arr = json_decode($file, true, 3);
+        foreach ($arr as $k => $param)
+        {
+            list( $res[0], $res[1], ) = array_values($param);
+            yield $res;
+        }
+    }
 }
