@@ -11,19 +11,24 @@
 <body>
 <div class="row align-items-center justify-content-center" style="min-height: 600px">
 
-    <form class="col-md-3 col-lg-3" action="/manager" method="post">
+    <form class="col-md-3 col-lg-3" action="/log/in" method="post">
         <?php if (isset($success) and $success==1)
         {
             echo '<div class="alert alert-success" role="alert">
-            Авторизация успешна <a href="/manager">Перейти</a>
+            Авторизация успешна <a href="/">Перейти</a>
+        </div>';
+        }else if (isset($success) and $success==-1)
+        {
+            echo '<div class="alert alert-warning" role="alert">
+            Неправильные данные
         </div>';
         }
         ?>
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
         <label for="inputName" class="sr-only">Login</label>
-        <input id="inputName" class="form-control" name="name" placeholder="Name" required type="text"><br/>
+        <input id="inputName" class="form-control" name="login" placeholder="Name" required type="text"><br/>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input id="inputPassword" class="form-control" name="auth" placeholder="Password" required type="password"><br/>
+        <input id="inputPassword" class="form-control" name="pass" placeholder="Password" required type="password"><br/>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         <p class="mt-5 mb-3 text-muted">© 2014-2018 Инвест82</p>

@@ -6,27 +6,12 @@ final class Route
      * @var string URL без GET
      */
 	public static $url = '/';
-	private static $key_word = [ 'region', 'city', 'cat', 'subcat', 'i'];
 
     /**
      * @param $arr array Массив URL
      * @param $start_elem int начальная позиция
      * @param $key int ключ аргумента
      */
-    private static function setParams($arr, $start_elem, $key)
-    {
-        $arr_size = count($arr);
-        $i = $start_elem;
-        $a = [];
-        $k = 0;
-        while ($i < $arr_size && !in_array($arr[$i], self::$key_word) && $arr[$i] != '')
-        {
-            $a[$k] = $arr[$i];
-            $i++;
-            $k++;
-        }
-        self::$arg[$key] = $a;
-    }
 
     /**
      *  Запуск маршрутизации
@@ -39,37 +24,26 @@ final class Route
             array_pop($routes);
         }
         self::$url = implode('/', $routes);
-        $routes_size = count($routes);
 
 
         // контроллер и действие по умолчанию
-        $controller_name = 'shop';
+        $controller_name = 'main';
         $action_name = 'index';
-        $start = 0;
 
-        if ( !empty($routes[1]) && !in_array($routes[1], self::$key_word) )
+        if ( !empty($routes[1]))
         {
-            $start = 2;
             $controller_name = $routes[1];
         }
-        if ( !empty($routes[2]) && !in_array($routes[1], self::$key_word) && !in_array($routes[2], self::$key_word) )
+        if ( !empty($routes[2]) )
         {
-            $start = 3;
             $action_name = $routes[2];
         }
-        for ($i=$start; $i<$routes_size; $i++)
-        {
-            if(!empty($routes[$i]) && in_array( $routes[$i], self::$key_word) )
-            {
-                self::setParams($routes, $i+1,  $routes[$i]);
-            }
-        }
-
         session_start();
         //Запрет на доступ к администрированию
-        if ($controller_name == 'manager' && (!isset($_SESSION['auth']) && !isset($_SESSION['name'])) )
+        if (!isset($_SESSION['auth']) )
         {
-            $action_name = 'log_in';
+            $controller_name = 'log';
+            $action_name = 'in';
         }
 
 		// добавляем префиксы
