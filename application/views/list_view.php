@@ -1,15 +1,16 @@
 <form name="filter" action="">
-<a href="" id="remove-cat">Сбросить категории</a>
+<span id="remove-cat">Сбросить категории</span>
 <div id="cat-container" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
 <?php
 if(isset(Route::$arg['cat']) and count(Route::$arg['cat']) == 1)
 {
-    echo '<input name="cat" value="'.Route::$arg['cat'][0].'" checked hidden>';
+    echo '<input name="cat" value="'.Route::$arg['cat'][0].'" hidden>';
     foreach (semanticCore::getSubFilter('cat', Route::$arg['cat'][0]) as $k => $arr)
     {
         $checked =  ( isset(Route::$arg['subcat']) && in_array($arr[1], Route::$arg['subcat']) ) ? 'checked': '';
         echo '<label><input type="checkbox" name="subcat" value="'.$arr[1].'" '.$checked.'>'.$arr[0].'</label>';
     }
+    echo '<script>document.querySelector("#cat-container").querySelector("input").checked = true</script>';
 }else{
     foreach (semanticCore::getFilter('cat') as $k => $arr)
     {
@@ -19,17 +20,18 @@ if(isset(Route::$arg['cat']) and count(Route::$arg['cat']) == 1)
 }?>
 </div>
 <br/>
-<a href="" id="remove-place">Сбросить города</a>
+<span id="remove-place">Сбросить города</span>
 <div id="place-container" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
 <?php
 if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
 {
-    echo '<input name="region" value="'.Route::$arg['region'][0].'" checked hidden>';
+    echo '<input name="region" value="'.Route::$arg['region'][0].'" hidden>';
     foreach (semanticCore::getSubFilter('region', Route::$arg['region'][0]) as $k => $arr)
     {
         $checked =  ( isset(Route::$arg['city']) && in_array($arr[1], Route::$arg['city']) ) ? 'checked': '';
         echo '<label><input type="checkbox" name="city" value="'.$arr[1].'" '.$checked.'>'.$arr[0].'</label>';
     }
+    echo '<script>document.querySelector("#place-container").querySelector("input").checked = true</script>';
 }else{
     foreach (semanticCore::getFilter('region') as $k => $arr)
     {
@@ -48,11 +50,10 @@ if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
     Отсортировать по цене: <a href="<?=Route::$url?>/?sort_by=cost&sort=1">Дороже</a> - <a href="<?=Route::$url?>/?sort_by=cost&sort=-1">Дешевле</a>
 </div>
 <div>
-    `id`, `name`, `added`, `cost`, `category_id`, `city_id`,  `status`, `images`, `is_conf`, `CY`.`cityName`, `CY`.`cityTranslit`, `CY`.`cityE`, `R`.`regTranslit`, `R`.`regE`, `SC`.`scTranslit`, `SC`.`scE`, `CT`.`ctE`, `CT`.`ctTranslit`
-<?php if ( !is_array($items) or count($items) == 0){?>
+ <?php if ( !is_array($items) or count($items) == 0){?>
     <p>Ничего ненайдено</p>
 <?php }else{  foreach ( $items as $k => $param){
-    list($id, $name, $added, $cost, ,, $status, $images, $conf,  $cityName, $cityTranslit, , $regTranslit, , $subcatTranslit, , , $catTranslit) = $param;
+    list($id, $name, $added, $cost, $catId, $cityId, $status, $images, $conf,  $cityName, $cityTranslit, , $regTranslit, , $subcatTranslit, , , $catTranslit) = $param;
 ?>
 <div class="list-item" style="display: inline-block;">
     <table border="1">
@@ -64,7 +65,7 @@ if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
             <td><?=format_cost($cost)?></td>
             <td><?=format_date($added)?></td>
         </tr>
-        <p><?php echo ($is_conf == 1) ? 'Conf' : ''?></p>
+        <p><?php echo ($conf == 1) ? 'Conf' : ''?></p>
     </table>
 </div>
 <?php }}?>
