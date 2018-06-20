@@ -45,6 +45,26 @@ class model
         return $result;
     }
 
+    /**
+     * Переключение записи
+     * @param $table string Имя таблицы
+     * @param $id
+     *
+     * @return mixed
+     */
+    public function toggle_entry($table,  $id)
+    {
+        $sql0 = str_ireplace( '{table}', $table, 'SELECT `is_enabled` FROM `{table}` WHERE `id`=?');
+        $sql1 = str_ireplace( '{table}', $table, 'UPDATE `{table}` SET `is_enabled`={toggle} WHERE `id`='.$id);
+
+        $t = (int)DataBase::run($sql0, [$id])->fetchColumn()[0];
+        $toggle = ($t+1)%2;
+
+        $sql1 = str_replace('{toggle}', $toggle, $sql1);
+        $result = self::$DBH->query($sql1);
+        return $result;
+    }
+
     /**Удаление записии из таблицы
      * @param string $table Имя таблицы
      * @param $id

@@ -7,7 +7,6 @@ require_once 'utils/translit_func.php';
 require_once 'utils/format.php';
 
 //Подключение базы данных
-require_once 'core/semanticCore.php';
 require_once 'core/Database.php';
 Database::instance( PDO['host'], PDO['database'], PDO['charset'], PDO['user'], PDO['password']);
 //Запускаем пользователей
@@ -19,4 +18,4 @@ require_once 'core/view.php';
 require_once 'core/controller.php';
 //Подключаем маршрутизатор
 require_once 'core/route.php';
-Route::start(); // запускаем маршрутизатор
+Route::start();

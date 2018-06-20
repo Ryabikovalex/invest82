@@ -25,7 +25,7 @@ if (isset($submit))
     list( $id, $name, $fio, $number, $email, $cost, $earn_p_m, $region, $address, $about, $conf) = $submit;
 }
 ?>
-<form action="/manager/submit_product/" method="post">
+<form action="/submit/product/" method="post">
     <p>Поля помеченные <span class="text-danger">*</span> обязательны для заполнения</p>
     <input name="id" type="password" value="<?php echo $id ?? 0?>" hidden>
     <h3>Клиент</h3>

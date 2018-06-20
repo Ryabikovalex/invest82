@@ -7,8 +7,8 @@
 <ul class="pagination justify-content-center">
     <?php $dp = (isset($from)and$from>0) ? '' : 'disabled';
     $dn = (isset($to) and $to>1) ? '' : 'disabled'?>
-    <li class="page-item <?=$dp?>"><a class="page-link" href="<?=Route::$url?>/?page=<?= $from?>"> ← Назад</a></li>
-    <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>/?page=<?= $to?>">Вперед →</a></li>
+    <li class="page-item <?=$dp?>"><a class="page-link" href="<?=Route::$url?>&page=<?= $from?>"> ← Назад</a></li>
+    <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>&page=<?= $to?>">Вперед →</a></li>
 </ul>
 
 
