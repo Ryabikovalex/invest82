@@ -66,11 +66,7 @@ final class Route
         }
 
         session_start();
-        //Запрет на доступ к администрированию
-        if ($controller_name == 'manager' && (!isset($_SESSION['auth']) && !isset($_SESSION['name'])) )
-        {
-            $action_name = 'log_in';
-        }
+        
 
 		// добавляем префиксы
 		$model_name = 'model_'.$controller_name;
