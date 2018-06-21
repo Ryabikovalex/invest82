@@ -4,7 +4,7 @@
         Всего <span class="badge badge-light"><?=$stat['city_count']?></span>
     </span>
     <span type="button" class="btn btn-success">
-        Активных на даныый момент <span class="badge badge-light"><?=$stat['city_active_count']?></span>
+        Активных на данный момент <span class="badge badge-light"><?=$stat['city_active_count']?></span>
     </span>
 </h2>
 <?php
@@ -31,23 +31,29 @@ if (isset($success))
 ?>
 <ul class="pagination justify-content-center">
     <?php $dp = (isset($from)and$from>0) ? '' : 'disabled';
-    $dn = (isset($to) and $to>1) ? '' : 'disabled'?>
-    <li class="page-item <?=$dp?>"><a class="page-link" href="<?=Route::$url?>&page=<?= $from?><?php echo (isset($_GET['region_id'])) ? '&region_id='.$_GET['region_id'] : ''?>"> ← Назад</a></li>
-    <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>&page=<?= $to?><?php echo (isset($_GET['region_id'])) ? '&region_id='.$_GET['region_id'] : ''?>">Вперед →</a></li>
+    $dn = (isset($to) and $to>1 and count($table) == DB['per_page']) ? '' : 'disabled'?>
+    <li class="page-item <?=$dp?>"><a class="page-link" href="<?=Route::$url?>/?page=<?= $from?><?php echo (isset($_GET['region_id'])) ? '&region_id='.$_GET['region_id'] : ''?>"> ← Назад</a></li>
+    <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>/?page=<?= $to?><?php echo (isset($_GET['region_id'])) ? '&region_id='.$_GET['region_id'] : ''?>">Вперед →</a></li>
 </ul>
 
-<p>Клик по статусу города переключает его.</p>
+<p>Клик по статусу переключает его.</p>
 <form action="<?=Route::$url?>/" method="get">
     <div class="row">
         <div class="col">
-            <select name="region_id" id="region" class="form-control">
-                <?php $json = json_decode( file_get_contents(PATH['json_all'].'region/index.json'), true, 3);
-                foreach ($json as $k => $v)
-                {
-                    echo '<option value="'.$v[0].'">'.$v[1].'</option>';
-                }
-                ?>
-            </select>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="region">Выбрать регион </label>
+                </div>
+                <select name="region_id" id="region" class="form-control">
+                    <?php $json = json_decode( file_get_contents(PATH['json_all'].'region/index.json'), true, 3);
+                    foreach ($json as $k => $v)
+                    {
+                        echo '<option value="'.$v[0].'">'.$v[1].'</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+
         </div>
         <div class="col">
             <input type="submit" class="btn btn-primary" value="Выбрать">

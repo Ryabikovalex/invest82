@@ -1,10 +1,10 @@
 <h2>
-   Регионы
+    Категории
     <span type="button" class="btn btn-info">
-        Всего <span class="badge badge-light"><?=$stat['regions_count']?></span>
+        Всего <span class="badge badge-light"><?=$stat['cat_count']?></span>
     </span>
     <span type="button" class="btn btn-success">
-        Активных на данный момент <span class="badge badge-light"><?=$stat['regions_active_count']?></span>
+        Активных на данный момент <span class="badge badge-light"><?=$stat['cat_active_count']?></span>
     </span>
 </h2>
 <?php
@@ -36,7 +36,7 @@ if (isset($success))
     <li class="page-item <?=$dn?>"><a class="page-link" href="<?=Route::$url?>/?page=<?= $to?>">Вперед →</a></li>
 </ul>
 
-<p>Клик по статусу региона переключает его.</p>
+<p>Клик по статусу переключает его.</p>
 
 <div class="table-responsive">
     <table class="table table-hover table-sm">
@@ -46,30 +46,30 @@ if (isset($success))
             <th>#</th>
             <th>Статус</th>
             <th class="col-lg-2 col-md-2">Регион</th>
-            <th class="table-info">Брокеров</th>
+            <th class="table-info">Бизнесов</th>
             <th class="table-info">Покупателей</th>
             <th>Транслит</th>
             <th>Заголовок</th>
-            <th class="table-info">Нас. пунктов</th>
+            <th class="table-info">Подкатегорий</th>
         </tr>
         </thead>
         <tbody>
         <?php foreach ($table as $k => $arr)
         {
-            list( $id, $name, $header, $translit, $is_enabled, $cities, $brokers, $buyers) = $arr;
+            list( $id, $name, $header, $translit, $is_enabled, $subcat, $buyers, $products) = $arr;
             $enable_url = Route::$url.'/?action=toggle&entry='.$id;
             $enable_url.= (isset($_GET['page'])) ? '&page='.$_GET['page'] : '';
             $enable = ($is_enabled == 0) ? '<a href="'.$enable_url.'" class="badge badge-danger">Отключен</a>' : '<a href="'.$enable_url.'" class="badge badge-success">Активен</a>';
             echo '<tr>
-<td><a class=" btn-link" href="/edit/region/?entry='.$id.'">Редактировать</a> <a class=" btn-link" href="/show/city/?region_id='.$id.'">Показать города</a></td>
+<td><a class="col btn-link" href="/edit/region/?entry='.$id.'">Редактировать</a><div class="w-100"></div><a class="col btn-link" href="/show/subcat/?cat='.$id.'">Показать подкатегории</a></td>
 <td>'.$id.'</td>
 <td>'.$enable.'</td>
 <td>'.$name.'</td>
-<td>'.$brokers.'</td>
+<td>'.$products.'</td>
 <td>'.$buyers.'</td>
 <td>'.$translit.'</td>
 <td>'.$header.'</td>
-<td>'.$cities.'</td>
+<td>'.$subcat.'</td>
     </tr>';}?>
         </tbody>
     </table>

@@ -107,7 +107,15 @@ if (isset($submit))
     <div class="form-row">
         <div class="col-md-3 mb-2">
             <label for="cat">Выбрать категорию <span class="text-danger">*</span></label>
-            <select name="cat" id="cat" class="form-control" required><option value="2" data-payload="avtobiznes">Автобизнес</option><option value="11" data-payload="aptechnyy">Аптечный</option><option value="10" data-payload="arendnyy">Арендный</option><option value="22" data-payload="gostinichnyy">Гостиничный</option><option value="12" data-payload="dlya-detey-&amp;-obrazovanie">Для детей &amp; образование</option><option value="13" data-payload="doli-biznesa">Доли бизнеса</option><option value="23" data-payload="izdatelstva">Издательства</option><option value="5" data-payload="internet">Интернет</option><option value="6" data-payload="kom.-nedvizhimost">Ком. недвижимость</option><option value="14" data-payload="krasota-&amp;-zdorove">Красота &amp; здоровье</option><option value="24" data-payload="medicina">Медицина</option><option value="9" data-payload="oborudovanie">Оборудование</option><option value="8" data-payload="obschepit">Общепит</option><option value="3" data-payload="ooo">ООО</option><option value="21" data-payload="proizvodstvo">Производство</option><option value="15" data-payload="razvlecheniya-i-dosug">Развлечения и досуг</option><option value="16" data-payload="selkhoz">Сельхоз</option><option value="17" data-payload="stroitelnyy">Строительный</option><option value="1" data-payload="torgovlya-i-magaziny">Торговля и магазины</option><option value="18" data-payload="transportnyy">Транспортный</option><option value="7" data-payload="turizm">Туризм</option><option value="4" data-payload="uslugi-i-servis">Услуги и сервис</option><option value="19" data-payload="finansovo-strakhovoy">Финансово-страховой</option><option value="20" data-payload="franshizy">Франшизы</option></select>
+            <select name="cat" id="cat" class="form-control" required>
+                <?php $json = json_decode( file_get_contents(PATH['json_all'].'cat/index.json'), true, 3);
+                foreach ($json as $k => $v)
+                {
+                    $check = ($region == $v[0]) ? 'selected' : '';
+                    echo '<option value="'.$v[0].'" data-payload="'.$v[2].'" '.$check.'>'.$v[1].'</option>';
+                }
+                ?>
+            </select>
         </div>
         <div class="col-md-3 mb-2">
             <label for="subcat">Выбрать подкатегорию</label>
@@ -141,42 +149,5 @@ if (isset($submit))
 
     <input type="submit" class="btn btn-primary" value="Опубликовать на сайте"/>
 </form>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let citySelect = document.querySelector('select#city');
-        let subcatSelect = document.querySelector('select#subcat');
-        function getSubParams( container, folder, val) {
-            let req = new XMLHttpRequest();
-            req.onreadystatechange = function() {
-                if (this.readyState === 4 && this.status === 200) {
-                    obj = JSON.parse(this.responseText);
-                    if ( obj instanceof Array && obj.length > 0 )
-                    {
-                        container.innerHTML = '';
-                        for ( let i=0; i < obj.length; i++)
-                        {
-                            let el = document.createElement('option');
-                            el.value = obj[i].id;
-                            el.innerHTML = obj[i].name;
-                            container.appendChild(el    );
-                        }
-                    }
-                }
-            };
-            req.open("GET", '/assets/json/all/'+folder+'/'+val+'.json', true);
-            req.send();
-        }
-        document.querySelector('select#region').onchange = function (e) {
-            let val = e.target.selectedOptions[0].getAttribute('data-payload');
-            let obj = [];
-            console.log('event called');
-            getSubParams( citySelect, e.target.name, val);
-        };
-        document.querySelector('select#cat').onchange = function (e) {
-            let val = e.target.selectedOptions[0].getAttribute('data-payload');
-            let obj = [];
-            getSubParams( subcatSelect, e.target.name, val);
-        };
-
-    }, false);
-</script>
+<script src="/assets/js/all_place.js"></script>
+<script src="/assets/js/all_cat.js"></script>

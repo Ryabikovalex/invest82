@@ -35,6 +35,8 @@ class model
         $result['city_active_count'] = Database::run('SELECT COUNT(*) FROM `city` WHERE `country_id`=3159 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
         $result['cat_active_count'] = Database::run('SELECT COUNT(*) FROM `categories` WHERE `parent`=0 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
         $result['cat_count'] = Database::run('SELECT COUNT(*) FROM `categories` WHERE `parent`=0')->fetch(PDO::FETCH_NUM)[0];
+        $result['subcat_active_count'] = Database::run('SELECT COUNT(*) FROM `categories` WHERE `parent`!=0 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
+        $result['subcat_count'] = Database::run('SELECT COUNT(*) FROM `categories` WHERE `parent`!=0')->fetch(PDO::FETCH_NUM)[0];
         $result['products_count'] = Database::run('SELECT COUNT(*) FROM `products`')->fetch(PDO::FETCH_NUM)[0];
         $result['reports_count'] = 0;
         $result['submit_buyers_count'] = Database::run('SELECT COUNT(*) FROM `submit_buyers`')->fetch(PDO::FETCH_NUM)[0];
@@ -76,7 +78,7 @@ class model
         $sql = 'DELETE FROM `{table}` WHERE `id`=?';
         $sql = str_ireplace('{table}', $table, $sql);
         $stmt = Database::run($sql, [$id]);
-        return $stmt;
+        return $stmt->rowCount();
     }
 
     /**Краткая информация о брокерах для форм

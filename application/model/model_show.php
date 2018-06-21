@@ -94,5 +94,26 @@ class model_show extends model{
 
         return $result;
     }
+
+    public function show_categ ($from, $to)
+    {
+        $sql0 = 'SELECT `id`, `name`, `header`, `translit`, `is_enabled`,`A`.`subcat`, `C`.`products`, `D`.`buyers` FROM `categories` LEFT JOIN (SELECT `parent` AS `catParent`, COUNT(*) AS `subcat` FROM `categories`  GROUP BY `parent`) `A` ON `id`=`A`.`catParent` LEFT JOIN (SELECT `id` AS `cId`, SUM(`S`.`found`) AS `products` FROM `categories` LEFT JOIN (SELECT `parent` AS `catParent`, `P`.`count` AS `found` FROM `categories` LEFT JOIN ( SELECT `category_id` as `sId` , COUNT(*) AS `count` FROM `products` GROUP BY `sId`) `P` ON `id`=`P`.`sId` WHERE `parent`!=0) `S` ON `id`=`S`.`catParent` WHERE `parent`=0 GROUP BY `id`
+) `C` ON `id`=`C`.`cId` LEFT JOIN (SELECT `category` AS `catId`, COUNT(*) AS `buyers` FROM `buyers`) `D` ON `id`=`D`.`catId` WHERE `parent`=0 ORDER BY `name` ASC LIMIT {from},{to}';
+        $sql0 = str_ireplace( ['{from}', '{to}'], [ $from, $to], $sql0);
+        $stmt = Database::run($sql0)->fetchAll(PDO::FETCH_NUM);
+        foreach ($stmt as $k => $arr)
+        {
+            foreach ($arr as $i => $v)
+            {
+                if (is_null($v))
+                {
+                    $stmt[$k][$i] = 0;
+                }
+            }
+        }
+        $result = $stmt;
+
+        return $result;
+    }
 }
 
