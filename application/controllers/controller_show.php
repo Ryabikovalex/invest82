@@ -20,8 +20,8 @@ class controller_show extends controller{
 	{
 
         $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? (int)htmlspecialchars($_GET['page']) : 1;
-        $from = ($page-1)*DB['per_page'];
-        $to = $page  *DB['per_page'] - 1;
+        $from = ($page-1) * DB['per_page'];
+        $to = $page  * DB['per_page'];
         $data['from'] = $page-1;
         $data['to'] = $page+1;
 
@@ -42,8 +42,8 @@ class controller_show extends controller{
 	public function action_cat()
     {
         $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? (int)htmlspecialchars($_GET['page']) : 1;
-        $from = ($page-1)*DB['per_page'];
-        $to = $page  *DB['per_page'] - 1;
+        $from = ($page-1) * DB['per_page'];
+        $to = $page  * DB['per_page'];
         $data['from'] = $page-1;
         $data['to'] = $page+1;
 
@@ -64,8 +64,8 @@ class controller_show extends controller{
     public function action_city()
     {
         $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? (int)htmlspecialchars($_GET['page']) : 1;
-        $from = ($page-1)*DB['per_page'];
-        $to = $page  *DB['per_page'] - 1;
+        $from = ($page-1) * DB['per_page'];
+        $to = $page  * DB['per_page'];
         $data['from'] = $page-1;
         $data['to'] = $page+1;
 
@@ -86,11 +86,35 @@ class controller_show extends controller{
         View::generate('show/city_view.php', $data);
     }
 
+    public function action_subcat()
+    {
+        $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? (int)htmlspecialchars($_GET['page']) : 1;
+        $from = ($page-1) * DB['per_page'];
+        $to = $page  * DB['per_page'];
+        $data['from'] = $page-1;
+        $data['to'] = $page+1;
+
+        if (isset($_GET['action']))
+        {
+            if ( htmlspecialchars($_GET['action']) == 'toggle')
+            {
+                $data['success'] = $this->model->toggle_entry( 'subcat', htmlspecialchars($_GET['entry']));
+            }
+        }
+
+        $data['header'] = 'Показ таблицы';
+        $data['stat'] = $this->model->collect_statistic();
+
+        $cat_id = $_GET['categories'] ?? 0;
+        $data['table'] = $this->model->show_subcateg($from, $to, $cat_id);
+        $this->call_view('show/subcat_view.php', $data);
+    }
+
     public function action_submit_products()
     {
         $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? (int)htmlspecialchars($_GET['page']) : 1;
-        $from = ($page-1)*DB['per_page'];
-        $to = $page  *DB['per_page'] - 1;
+        $from = ($page-1) * DB['per_page'];
+        $to = $page  * DB['per_page'];
         $data['from'] = $page-1;
         $data['to'] = $page+1;
 

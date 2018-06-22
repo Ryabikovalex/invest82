@@ -41,23 +41,39 @@
                 <li class="collapse" id="database_static">
                     <ul class="flex-column" style="padding: 0px 0 0 40px">
                         <li class="nav-item">
-                            <a class="nav-link" href="/show/region">
-                                Регионы  <span class="badge badge-success"><?php echo $stat['regions_active_count'] ?? 0;?></span> <span class="badge badge-secondary"><?php echo $stat['regions_count'] ?? 0;?></span>
+                            <a class="nav-link d-flex justify-content-between" href="/show/region">
+                                Регионы
+                                <span>
+                                    <span class="badge badge-success"><?php echo $stat['regions_active_count'] ?? 0;?></span>
+                                    <span class="badge badge-secondary"><?php echo $stat['regions_count'] ?? 0;?></span>
+                                </span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/show/city">
-                                Нас. пункты  <span class="badge badge-success"><?php echo $stat['city_active_count'] ?? 0;?></span> <span class="badge badge-secondary"><?php echo $stat['city_count'] ?? 0;?></span>
+                            <a class="nav-link d-flex justify-content-between" href="/show/city">
+                                Нас. пункты
+                                <span>
+                                    <span class="badge badge-success"><?php echo $stat['city_active_count'] ?? 0;?></span>
+                                    <span class="badge badge-secondary"><?php echo $stat['city_count'] ?? 0;?></span>
+                                </span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/show/cat">
-                                Категории  <span class="badge badge-success"><?php echo $stat['cat_active_count'] ?? 0;?></span> <span class="badge badge-secondary"><?php echo $stat['cat_count'] ?? 0;?></span>
+                            <a class="nav-link d-flex justify-content-between" href="/show/cat">
+                                Категории
+                                <span>
+                                    <span class="badge badge-success"><?php echo $stat['cat_active_count'] ?? 0;?></span>
+                                    <span class="badge badge-secondary"><?php echo $stat['cat_count'] ?? 0;?></span>
+                                </span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/show/subcat">
-                                Подкатегории  <span class="badge badge-success"><?php echo $stat['subcat_active_count'] ?? 0;?></span> <span class="badge badge-secondary"><?php echo $stat['subcat_count'] ?? 0;?></span>
+                            <a class="nav-link d-flex justify-content-between" href="/show/subcat">
+                                Подкатегории
+                                <span>
+                                    <span class="badge badge-success"><?php echo $stat['subcat_active_count'] ?? 0;?></span>
+                                    <span class="badge badge-secondary"><?php echo $stat['subcat_count'] ?? 0;?></span>
+                                </span>
                             </a>
                         </li>
                     </ul>
@@ -124,26 +140,21 @@
                 </li>
             </ul>
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Действия <span class="badge badge-warning">Ресурсоемкие</span></span>
+                Действия <span class="badge badge-warning"  data-toggle="tooltip" data-placement="right" title="Действия могут ухудшить работу сайта у пользователей">Ресурсоемкие</span>
             </h6>
-            <ul class="nav flex-column mb-2">
+            <ul class="nav flex-column mb-2 ">
                 <li class="nav-item">
-                    <a class="nav-link" href="/?action=#">
-                        Обновить фильтры пользователя
+                    <a class="nav-link" href="/?action=update_filters">
+                        Обновить фильтры
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/?action=#">
-                        Обновить фильтры администратора
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/?action=#">
+                    <a class="nav-link" href="/?action=update_translit">
                         Обновить транслитерацию
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/?action=#">
+                    <a class="nav-link" href="/?action=update_stat">
                         Пересчитать статистику
                     </a>
                 </li>

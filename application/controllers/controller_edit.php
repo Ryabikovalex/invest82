@@ -48,4 +48,22 @@ class controller_edit extends controller
         $data['stat'] = $this->model->collect_statistic();
         $this->call_view('edit/city_view.php', $data);
     }
+
+    public function action_cat()
+    {
+        $data = [];
+        if ( !isset($_POST['entry']))
+        {
+            $data['entry'] = $this->model->get_entry( 'categories', htmlspecialchars($_GET['entry']));
+        }else{
+            $entry = $_POST['entry'];
+            unset($_POST['entry']);
+            $param = $_POST;
+            $param['is_enabled'] = $param['is_enabled'] == "on" ? 1 : 0;
+            $data['success'] = $this->model->update_entry( 'categories', $entry, $param);
+        }
+
+        $data['stat'] = $this->model->collect_statistic();
+        $this->call_view('edit/cat_view.php', $data);
+    }
 }

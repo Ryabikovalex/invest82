@@ -115,5 +115,26 @@ class model_show extends model{
 
         return $result;
     }
+
+    public function show_subcateg ($from, $to, $categ)
+    {
+        $sql = 'SELECT `id`, `name`, `header`, `translit`, `is_enabled`, `parent`, `A`.`parentName`, `B`.`products` FROM `categories` LEFT JOIN (SELECT `id` AS `parId`, `name` AS `parentName` FROM `categories`  WHERE `parent`=0) `A` ON `parent`=`A`.`parId` LEFT JOIN (SELECT `category_id`, COUNT(*) AS `products` FROM `products` GROUP BY `category_id`) `B` ON `id`=`B`.`category_id` WHERE `parent`!=0 {replace}  ORDER BY `name` ASC LIMIT {from},{to}';
+        $replace = ( $categ !== 0 ) ? ' AND `parent`='.$categ : '';
+        $sql = str_ireplace( ['{from}', '{to}', '{replace}'], [ $from, $to, $replace], $sql);
+
+        $stmt = Database::run($sql)->fetchAll(PDO::FETCH_NUM);
+        foreach ($stmt as $k => $arr)
+        {
+            foreach ($arr as $i => $v)
+            {
+                if (is_null($v))
+                {
+                    $stmt[$k][$i] = 0;
+                }
+            }
+        }
+        $result = $stmt;
+        return $result;
+    }
 }
 
