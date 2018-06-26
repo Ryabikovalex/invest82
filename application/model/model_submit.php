@@ -35,8 +35,8 @@ class model_submit extends model{
      */
     public function public_product ( $payload)
     {
-        $sql_cust_i = 'INSERT INTO `customers`( `fio`, `number`, `email`) VALUES ( ?, ?, ?)';
-        $sql_cust_u = 'UPDATE `customers` SET `number`=? ,`email`=? WHERE `id`=?';
+        $sql_cust_i = 'INSERT INTO `customers`( `fio`, `number`, `email`, `is_sell`) VALUES ( ?, ?, ?, 1)';
+        $sql_cust_u = 'UPDATE `customers` SET `number`=? ,`email`=?, `is_sell`=1 WHERE `id`=?';
         $sql_product_i = 'INSERT INTO `products`(
         `name`,
         `customer_id`,
@@ -53,9 +53,11 @@ class model_submit extends model{
         `status`,
         `images`,
         `is_conf`,
-        `broker_id`
+        `broker_id`,
+        `is_part`
         )
-        VALUES( ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)';
+        VALUES( ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, "", ?, ?, ?)';
+        $sql_image_up = 'UPDATE `products` SET `images`=? WHERE `id`=?';
 
         $customer = Database::run('SELECT * FROM `customers` WHERE `fio`=?', [$payload['fio']])->fetch(PDO::FETCH_ASSOC);
         if ( !$customer)
@@ -71,18 +73,36 @@ class model_submit extends model{
         }
 
         $is_conf = (isset($payload['conf']) and $payload['conf'] == 'on') ? 1 : 0;
+        $is_part = (isset($payload['part']) and $payload['part'] == 'on') ? 1 : 0;
         $cat = (!isset($payload['subcat'])) ? $payload['cat'] : $payload['subcat'];
 
-        if ($payload['id'] == 0)
-        {
-            $images = '[]';
-        }else
-        {
-            $images = Database::run('SELECT `images` FROM `submit_products` WHERE `id`=?', [$payload['id']])->fetch(PDO::FETCH_COLUMN);
-            Database::run('DELETE FROM `submit_products` WHERE `id`=?', [$payload['id']]);
-        }
-        $result = Database::run( $sql_product_i, [ $payload['name'], $cust_id, $payload['cost'], $payload['earn_p_m'], $payload['oborot_p_m'], $payload['rashod_p_m'], $cat, $payload['city'], $payload['address'], $payload['about'], $payload['shtat'], $images, $is_conf, $payload['broker']]);
+        $result = Database::run( $sql_product_i, [ $payload['name'], $cust_id, $payload['cost'], $payload['earn_p_m'], $payload['oborot_p_m'], $payload['rashod_p_m'], $cat, $payload['city'], $payload['address'], $payload['about'], $payload['shtat'], $is_conf, $payload['broker'], $is_part]);
 
+        $id = Database::lastInsertId();
+
+        $n = [];
+        $i = 1;
+        foreach ($_FILES as $key => $file) {
+            if ( Image::verify($file) == 1)
+            {
+                $hash =  substr(md5($id), 7);
+                $path = $_SERVER['DOCUMENT_ROOT'].'/'.PATH['image_biznes'].$hash;
+                mkdir( $path, 0766, TRUE);
+                $ext = explode('/', $file['type'])[1];
+                move_uploaded_file($file['tmp_name'], $path.'/'.$i.'.'.$ext);
+
+                $new['name'] = $hash.'/'.$i.'.'.$ext;
+                $new['alt'] = $payload['images_alt'][$i];
+                $n[] = $new;
+                $i++;
+            }
+        }
+        $images = json_encode($n, JSON_INVALID_UTF8_IGNORE | JSON_OBJECT_AS_ARRAY);
+        var_dump($payload['images_alt'], json_encode($n, JSON_INVALID_UTF8_IGNORE | JSON_OBJECT_AS_ARRAY));
+
+        $stmt = Database::run($sql_image_up, [$images, $id]);
+
+        // Database::run('DELETE FROM `submit_products` WHERE `id`=?', [$payload['id']]);
         return $result;
     }
 }

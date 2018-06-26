@@ -20,7 +20,7 @@ function getSubParams( container, folder, val) {
                     let el = document.createElement('option');
                     el.value = obj[i].id;
                     el.innerHTML = obj[i].name;
-                    container.appendChild(el    );
+                    container.appendChild(el);
                 }
             }
         }

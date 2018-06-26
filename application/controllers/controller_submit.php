@@ -22,7 +22,18 @@ class controller_submit extends controller{
             $data['submit'] = $this->model->product($entry);
         }else
         {
-            $data['success'] = $this->model->public_product($_POST);
+            $arr = [];
+            foreach ( $_POST as $k =>$v)
+            {
+                if ($k !== "с_images" and !preg_match('/^image_alt(\d{1})/', $k))
+                {
+                    $arr[$k] = trim(htmlspecialchars($v));
+                }else if ( preg_match('/^image_alt(\d+)/', $k, $match) )
+                {
+                    $arr['images_alt'][ substr($k, 9 ) ] = trim(htmlspecialchars($v));
+                }
+            }
+            $data['success'] = $this->model->public_product($arr);
         }
 
         $data['header'] = 'Одобрение продукта';

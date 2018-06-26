@@ -25,7 +25,7 @@ if (isset($submit))
     list( $id, $name, $fio, $number, $email, $cost, $earn_p_m, $region, $address, $about, $conf) = $submit;
 }
 ?>
-<form action="/submit/product/" method="post">
+<form enctype="multipart/form-data" action="/submit/product/" method="post">
     <p>Поля помеченные <span class="text-danger">*</span> обязательны для заполнения</p>
     <input name="id" type="password" value="<?php echo $id ?? 0?>" hidden>
     <h3>Клиент</h3>
@@ -53,6 +53,10 @@ if (isset($submit))
     <div class="form-group form-check">
         <input name="conf"  type="checkbox" class="form-check-input" id="conf" <?php if ($conf == 1) echo 'checked'?>
         <label class="form-check-label" for="conf">Конфидециально</label>
+    </div>
+    <div class="form-group form-check">
+        <input name="part"  type="checkbox" class="form-check-input" id="part" <?php if ($part == 1) echo 'checked'?>
+        <label class="form-check-label" for="part">Продается доля в бизнесе</label>
     </div>
 
     <h4>Бизнес</h4>
@@ -137,9 +141,34 @@ if (isset($submit))
         <textarea name="about" class="form-control" id="about_area" rows="6"><?php echo  $about ?? ''?></textarea>
     </div>
 
+    <div class="col-md-3 mb-2">
+        <label>Кол-во картинок <span class="text-danger">*</span> (первая картинка будет показана как основная)</label>
+        <select name="c_images" class="form-control" required id="c_images">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+        </select>
+    </div>
+    <div id="image_container">
+        <div class=" form-group input-group col-md-5 col-xl-5">
+            <input name="image_alt1" type="text" class="form-control" required placeholder="Подпись картинки">
+            <div class="custom-file">'
+                <input name="image_src1" type="file" class="custom-file-input" id="inputFile1" required>
+                <label class="custom-file-label" for="inputFile1">Выбрать файл</label>
+            </div>
+        </div>
+    </div>
+
     <div class="form-group">
         <label for="broker">Назначить брокера</label>
         <select name="broker" class="form-control" id="broker" required>
+            <option>Выберите брокера</option>
             <?php foreach ($brokers as $k => $v)
                 {
                    echo '<option value="'.$v[0].'">'.$v[1].' [ '.$v[2].' ]</option>';
@@ -149,5 +178,38 @@ if (isset($submit))
 
     <input type="submit" class="btn btn-primary" value="Опубликовать на сайте"/>
 </form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let images = $("#image_container");
+        $('select#c_images').onchange = function (e) {
+            e.preventDefault();
+            let count = images.children.length;
+            let need = parseInt(this.value);
+
+            if (count < need)
+            {
+                for (let i=count+1; i <= need ; i++)
+                {
+                    let div = '<div class=" form-group input-group col-md-5 col-xl-5">' +
+                        '        <input name="image_alt'+i+'" type="text" class="form-control" required placeholder="Подпись картинки">' +
+                        '        <div class="custom-file">' +
+                        '            <input name="image_src'+i+'" type="file" class="custom-file-input" id="inputFile'+i+'" required>' +
+                        '            <label class="custom-file-label" for="inputFile'+i+'">Выбрать файл</label>' +
+                        '        </div>' +
+                        '    </div>';
+                    images.innerHTML = images.innerHTML+div;
+                }
+            }else
+            {
+                while (need !== count)
+                {
+                    images.removeChild(images.lastChild);
+                    count--;
+                }
+            }
+        }
+
+    }, false);
+</script>
 <script src="/assets/js/all_place.js"></script>
 <script src="/assets/js/all_cat.js"></script>

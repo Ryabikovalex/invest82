@@ -42,8 +42,8 @@ class model
         $result['submit_buyers_count'] = Database::run('SELECT COUNT(*) FROM `submit_buyers`')->fetch(PDO::FETCH_NUM)[0];
         $result['submit_products_count'] = Database::run('SELECT COUNT(*) FROM `submit_products`')->fetch(PDO::FETCH_NUM)[0];
         $result['brokers_count'] = Database::run('SELECT COUNT(*) FROM `brokers`')->fetch(PDO::FETCH_NUM)[0];
-        $result['buyers_count'] = Database::run('SELECT COUNT(*) FROM `buyers`')->fetch(PDO::FETCH_NUM)[0];
-        $result['customers_count'] = Database::run('SELECT COUNT(*) FROM `customers`')->fetch(PDO::FETCH_NUM)[0];
+        $result['buyers_count'] = Database::run('SELECT COUNT(*) FROM `buyers`')->fetch(PDO::FETCH_NUM)[0];/////////////////
+        $result['customers_count'] = Database::run('SELECT COUNT(*) FROM `customers`')->fetch(PDO::FETCH_NUM)[0];///////////
         return $result;
     }
 

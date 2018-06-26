@@ -6,6 +6,8 @@ LOAD_CONFIGURATION('config.ini');
 require_once 'utils/translit_func.php';
 require_once 'utils/format.php';
 
+require_once 'core/Image.php';
+
 //Подключение базы данных
 require_once 'core/Database.php';
 Database::instance( PDO['host'], PDO['database'], PDO['charset'], PDO['user'], PDO['password']);
