@@ -1,9 +1,9 @@
 <?php
-class controller_shop extends controller
+class controller_catalog extends controller
 {
     function __construct()
     {
-        $this->model = new model_shop();
+        $this->model = new model_catalog();
     }
 
     public function action_index()
@@ -15,8 +15,8 @@ class controller_shop extends controller
     {
         $sort = (isset($_GET['sort_by']) and isset($_GET['sort'])) ? [ htmlspecialchars($_GET['sort']) => htmlspecialchars($_GET['sort_by'])]: [];
         $page = ( isset($_GET['page']) and $_GET['page']>0 ) ? (int)htmlspecialchars($_GET['page']) : 1;
-        $from = ($page-1)*50;
-        $to = $page * 50 - 1;
+        $from = ($page-1)*DB['per_page'];
+        $to = $page * DB['per_page'];
 
 
         $data['from'] = $page-1;
@@ -33,6 +33,7 @@ class controller_shop extends controller
         $data['product'] = $this->model->getEntry( Route::$arg['i']);
 
         $data['header'] = $data['product'][0];
+        $data['description'] = substr($data['product'][9], 0, 130).'...';
         $this->call_view('product_view.php', $data);
     }
 

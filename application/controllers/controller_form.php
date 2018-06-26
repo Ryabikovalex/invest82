@@ -20,14 +20,17 @@ class controller_form extends controller{
 		if( isset($_POST) and count($_POST) > 0)
 		{
 		    $arr = [];
-		    foreach ($_POST as $k => $v)
+            foreach ($_POST as $k => $v)
             {
-                $arr[$k] = trim( htmlspecialchars($v) );
+                if ($v !== "" and $k !== "call")
+                {
+                    $arr[$k] = trim( htmlspecialchars($v) );
+                }
             }
-
-			$data['success'] = $this->model->submit_biznes($arr);
+            $data['success'] = $this->model->submit_biznes($arr);
 		}
 		$data['header'] = 'Продать бизнес';
+		$data['uslugi'] = $this->model->get_uslugi();
 		$this->call_view('form/sell_biznes_view.php', $data );
 	}
 

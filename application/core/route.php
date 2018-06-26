@@ -6,7 +6,7 @@ final class Route
      * @var string URL без GET
      */
 	public static $url = '/';
-	private static $key_word = [ 'region', 'city', 'cat', 'subcat', 'i'];
+	private static $key_word = [ 'region', 'city', 'cat', 'subcat', 'i', 'part'];
 
     /**
      * @param $arr array Массив URL
@@ -43,7 +43,7 @@ final class Route
 
 
         // контроллер и действие по умолчанию
-        $controller_name = 'shop';
+        $controller_name = 'main';
         $action_name = 'index';
         $start = 0;
 
@@ -70,7 +70,6 @@ final class Route
 
 		// добавляем префиксы
 		$model_name = 'model_'.$controller_name;
-		$_SESSION['model_main'] = $model_name;
 		$controller_name = 'controller_'.$controller_name;
 		$action_name = 'action_'.$action_name;
 		// подцепляем файл с классом модели (файла модели может и не быть)

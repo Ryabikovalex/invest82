@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const { origin } = window.location;
+    const { origin, pathname } = window.location;
     let $ = function (selector, element = document)
     {
         return element.querySelector(selector);
@@ -30,12 +30,23 @@ document.addEventListener('DOMContentLoaded', function () {
         [].forEach.call( items, function (item){
             item.checked = false;
         });
+
         updateUrl();
     };
 
     function updateUrl ()
     {
-        let URL = origin+'/shop/list';
+        let u = '/';
+        if ( pathname.match( /(part)/i) !== null )
+        {
+            u = '/catalog/list/part';
+        }
+        else if ( pathname.match( /(list)/i) !== null )
+        {
+            u = '/catalog/list';
+        }
+
+        let URL = origin+u;
         let cat = [], subcat = [], region = [], city = [];
         [].map.call( $$('input', contCat), function(item){
             if ( item.checked)
@@ -78,7 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
         {
             URL += '/city/' + city.join('/');
         }
-        window.location = URL;
+        
+		window.location = URL;
     }
 
 });
