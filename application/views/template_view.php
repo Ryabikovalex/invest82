@@ -61,7 +61,7 @@
     </style>
 </head>
 <body>
-<div id="wrapper" class="container-fluid" style="padding: 0;">
+<div id="wrapper" class="container-fluid  h-auto" style="padding: 0;">
 	<header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <a class="navbar-brand" href="/">Invest82.ru</a>
@@ -106,12 +106,36 @@
         </div>
 	</header>
 	<main class="container-fluid d-flex justify-content-center">
-		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-8 col-xl-8" style="background-color: #FFFFFF; padding: 0">
+		<div class="col-xs-12 col-sm-12 col-md-10 col-lg-8 col-xl-8" style="background-color: #FFFFFF; padding: 0; margin-top: 10px">
             <?php include $content_view ?>
         </div>
 	</main>
-	<footer class="text-muted d-flex justify-content-center">
-		@Copyright
+	<footer class="text-muted d-flex justify-content-center" style="padding-top: 15px">
+		<div class="col-xs-12 col-sm-5 col-lg-2">
+            <ul class="list-unstyled">
+                <li>
+                    <a href="/catatlog/list"> Каталог бизнесов</a>
+                </li>
+                <li>
+                    <a href="/catatlog/list/part"> Каталог долей в бизнесе</a>
+                </li>
+                <li>
+                    <a href="/catatlog/list"> Каталог бизнесов</a>
+                </li>
+            </ul>
+        </div>
+		<div class="col-xs-12 col-sm-5 col-lg-2">
+            <p class="w-100">
+                8 978 050 999 5<br/>
+                8 919 10 66 208
+            </p>
+            <p class="w-100">
+                victor7broker@gmail.com
+            </p><br/>
+            <p class="w-100">
+                © 2014-2018 Инвест82 invest82 - сайт Объявлений Симферополя купить продать готовый бизнес
+            </p>
+        </div>
 	</footer>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

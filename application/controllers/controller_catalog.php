@@ -28,13 +28,13 @@ class controller_catalog extends controller
         $this->call_view( 'list_view.php', $data);
     }
 
-    public function action_product()
+    public function action_biznes()
     {
-        $data['product'] = $this->model->getEntry( Route::$arg['i']);
+        $data['product'] = $this->model->getEntry( Route::$arg['i'][0]);
 
         $data['header'] = $data['product'][0];
         $data['description'] = substr($data['product'][9], 0, 130).'...';
-        $this->call_view('product_view.php', $data);
+        $this->call_view('biznes_view.php', $data);
     }
 
 }

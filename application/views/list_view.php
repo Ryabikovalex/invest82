@@ -70,7 +70,7 @@ if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
                  <?php echo ($conf == 1) ? '<span class="badge badge-danger" style="font-size: 85%;">Конфидециально</span>' : ''?>
                  <?php echo ($status == 0) ? '<span class="badge badge-success " style="font-size: 85%;">Новинка</span>' : ''?>
              </p>
-             <a href="/catalog/product/i/<?=$id?>"><h3 class="card-title h5" itemprop="name"><?=$name?></h3></a>
+             <a href="/catalog/biznes/i/<?=$id?>"><h3 class="card-title h5" itemprop="name"><?=$name?></h3></a>
              <p class="card-text" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                  <span itemprop="priceCurrency" content="RUB"></span>
                  <span itemprop="price" class="d-none"><?=$cost?></span>

@@ -10,5 +10,7 @@ class controller_uslugi extends controller
     {
         $data['header'] = 'Услуги для продажи бизнеса';
         $data['uslugi'] = $this->model->getUslugi();
+
+        $this->call_view('uslugi_view.php', $data);
     }
 }
