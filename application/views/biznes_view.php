@@ -1,7 +1,7 @@
 <?php list( $name, $date, $cost, $earn, $oborot, $rashod, $region, $city, $address, $about, $shtat, $status, $images, $is_conf, , $brName, $brTel) = $product;
 $images = json_decode($images, true, 512, JSON_OBJECT_AS_ARRAY);
 ?>
-<div class="container-fluid row">
+<div class="container-fluid row" itemscope itemtype="http://schema.org/Product">
     <div class="col-xs-12 col-sm-12 col-md-6 h-auto" style="">
         <div id="carouselimages" class="carousel slide h-100" data-ride="carousel">
             <ol class="carousel-indicators">
@@ -16,8 +16,9 @@ $images = json_decode($images, true, 512, JSON_OBJECT_AS_ARRAY);
                 <?php foreach ($images as $k => $data)
                 {
                     $a = ($k==0)?'active':'';
+                    $i = ($k==0)?'itemprop="image"':'';
                     echo ' <div class="carousel-item '.$a.'">
-                <img class="d-block w-100" src="'.PATH['images_biznes'].$data['name'].'" alt="'.$data['alt'].'">
+                <img class="d-block w-100" '.$i.' src="'.PATH['images_biznes'].$data['name'].'" alt="'.$data['alt'].'">
             </div>';
                 }
                 ?>
@@ -43,9 +44,12 @@ $images = json_decode($images, true, 512, JSON_OBJECT_AS_ARRAY);
         <div class="container-fluid">
             <?=$about?>
         </div>
-        <p class="h5">
-
-        </p>
+        <span itemprop="name" class="d-none"><?=$name?></span>
+        <span itemprop="name" class="d-none"><?=$description?></span>
+        <span itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <span itemprop="price" class="d-none"><?=$cost?></span>
+            <span itemprop="priceCurrency" content="RUB"></span>
+        </span>
         <p class="h5 text-primary">Стоимость : <?=format_cost($cost)?> руб.</p>
 
     </div>

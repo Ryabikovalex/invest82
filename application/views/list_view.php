@@ -63,17 +63,15 @@ if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
     $image = json_decode($images, true)[0];
 ?>
  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 list-item">
-     <div itemscope itemtype="http://schema.org/Product" class="d-flex justify-content-center flex-column" style="margin: 3px;">
-         <img itemprop="image" class="container" src="<?=PATH['images_biznes'].$image['name'] ?? ''?>" alt="<?= $image['alt'] ?? 'image'?>" style="max-width: 24rem;">
+     <div  class="d-flex justify-content-center flex-column" style="margin: 3px;">
+         <img class="container" src="<?=PATH['images_biznes'].$image['name'] ?? ''?>" alt="<?= $image['alt'] ?? 'image'?>" style="max-width: 24rem;">
          <div class="card-body">
              <p class="card-text">
                  <?php echo ($conf == 1) ? '<span class="badge badge-danger" style="font-size: 85%;">Конфидециально</span>' : ''?>
                  <?php echo ($status == 0) ? '<span class="badge badge-success " style="font-size: 85%;">Новинка</span>' : ''?>
              </p>
-             <a href="/catalog/biznes/i/<?=$id?>"><h3 class="card-title h5" itemprop="name"><?=$name?></h3></a>
-             <p class="card-text" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                 <span itemprop="priceCurrency" content="RUB"></span>
-                 <span itemprop="price" class="d-none"><?=$cost?></span>
+             <a href="/catalog/biznes/i/<?=$id?>"><h3 class="card-title h5"><?=$name?></h3></a>
+             <p class="card-text" >
                  Стоимость : <?=format_cost($cost)?> руб.<br/>
                  Прибыль : <?=format_cost($earn)?> руб.<br/>
                  Добавлен : <?=format_date($added)?> <br/>
