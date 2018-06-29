@@ -6,3 +6,4 @@ refactor.php
 /.htaccess
 /.htaccess.txt
 config.ini
+/sitemap*.xml

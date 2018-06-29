@@ -45,6 +45,25 @@ class semanticCore {
         return $h;
     }
 
+    public static function getFullHeader($header, $params)
+    {
+        $phrases = [
+            ' от собственника',
+            ''
+        ];
+        if (isset($params['mix']))
+        {
+            $header .= $phrases[mt_rand(0, count($phrases)-1)];
+        }
+
+        if (isset($params['page']))
+        {
+            $header .= ' | Страница'.$params['page'];
+        }
+
+        return $header;
+    }
+
     public static function getFilter ( $type)
     {
         $file = '';

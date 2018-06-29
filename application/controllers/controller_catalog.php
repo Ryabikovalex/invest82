@@ -23,6 +23,8 @@ class controller_catalog extends controller
         $data['to'] = $page+1;
 
         $data['header'] = semanticCore::getHeader( Route::$arg);
+        $data['title'] = semanticCore::getFullHeader($data['header'], ['mix' => 1, 'page'=> $page]);
+        $data['description'] = ( $page == 1) ?  'Купить готовый и прибыльный бизнес в  Крыму. Покупайте бизнес у Инвест82.  Минимизируйте риски при покупке бизнеса.' : '';
         $data['items'] = $this->model->getList( $from, $to, Route::$arg, $sort);
 
         $this->call_view( 'list_view.php', $data);

@@ -65,6 +65,15 @@ final class Route
             }
         }
 
+        if (isset(self::$arg['subcat']) and !isset(self::$arg['cat']))
+        {
+            Route::ErrorPage404();
+        }
+        if (isset(self::$arg['city']) and !isset(self::$arg['region']))
+        {
+            Route::ErrorPage404();
+        }
+
         session_start();
         
 
@@ -127,7 +136,7 @@ final class Route
 		$host = 'http://'.$_SERVER['HTTP_HOST'].'/';
 		header('HTTP/1.1 404 Not Found');
 		header("Status: 404 Not Found");
-		header('Location:'.$host.'404');
+		header('Location:'.$host.'404.html');
     }
 
     /**

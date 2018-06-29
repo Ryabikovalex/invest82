@@ -3,27 +3,11 @@
 <head>
     <meta lang="ru">
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title><?=$header?></title>
-    <meta name="description" content="<?php echo $description ?? 'Купить готовый и прибыльный бизнес в  Крыму. Покупайте бизнес у Инвест82.  Минимизируйте риски при покупке бизнеса.'?>">
+    <title><?=$header ?? $title?> | invest82.ru</title>
+    <meta name="description" content="<?php echo $description ?? ''?>">
     <meta name="robots" content="index, follow">
     <meta name="author" content="">
-    <script type="application/ld+json">
-    {
-        "@context": "http://schema.org/",
-        "@type": "Organization",
-        "name": "Invest82",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "",
-            "addressLocality": "Simferopol",
-            "addressRegion": "Crimea",
-            "postalCode": "295000"
-        },
-        "telephone": "+7 978 050 999 5"
-    }
-    </script>
-
-    <link rel="stylesheet" href="/assets/css/style.css">
+       <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <style>
         /*.dropdown:hover>.dropdown-menu {
