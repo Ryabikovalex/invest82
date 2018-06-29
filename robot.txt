@@ -1,0 +1,17 @@
+User-Agent: *
+Disallow: /form
+Disallow: *sort*
+Disallow: /*?*utm_
+Sitemap: /sitemap.xml
+
+User-Agent: Googlebot
+Disallow: /form
+Disallow: *sort*
+Disallow: /*?*utm_
+Sitemap: /sitemap.xml
+
+User-Agent: Yandex
+Disallow: /form
+Disallow: *sort*
+Disallow: /*?*utm_
+Sitemap: /sitemap.xml
