@@ -3,6 +3,9 @@
     <span type="button" class="btn btn-info">
         Всего <span class="badge badge-light"><?=$stat['submit_products_count']?></span>
     </span>
+    <a href="/submit/product/?entry=0" type="button" class="btn btn-info">
+        Добавить бизнес
+    </a>
 </h2>
 <?php
 //Проверка успешного завершенного действия

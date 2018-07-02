@@ -10,16 +10,19 @@ class model_submit extends model{
     public function product ( $entry)
     {
         $result = [];
-        $sql0 = 'SELECT `id`, `name`, `A`.`fio`, `A`.`number`, `A`.`email`, `cost`, `earn_p_m`, `region_id`, `address`, `about`, `is_conf` FROM `submit_products` LEFT JOIN ( SELECT `id` AS `cusId`, `fio`, `number`, `email` FROM `customers`) `A` ON `customer_id`=`A`.`cusId` WHERE `id`=?';
-        $stmt = Database::run($sql0, [$entry])->fetchAll(PDO::FETCH_NUM)[0];
-        foreach ($stmt as $k => $v)
+        if( $entry != 0)
         {
-            if ( $v === null)
+            $sql0 = 'SELECT `id`, `name`, `A`.`fio`, `A`.`number`, `A`.`email`, `cost`, `earn_p_m`, `region_id`, `address`, `about`, `is_conf` FROM `submit_products` LEFT JOIN ( SELECT `id` AS `cusId`, `fio`, `number`, `email` FROM `customers`) `A` ON `customer_id`=`A`.`cusId` WHERE `id`=?';
+            $stmt = Database::run($sql0, [$entry])->fetchAll(PDO::FETCH_NUM)[0];
+            foreach ($stmt as $k => $v)
             {
-                $result[] = '';
-            }else
-            {
-                $result[] = $v;
+                if ( $v === null)
+                {
+                    $result[] = '';
+                }else
+                {
+                    $result[] = $v;
+                }
             }
         }
         return $result;
@@ -97,8 +100,8 @@ class model_submit extends model{
                 $i++;
             }
         }
-        $images = json_encode($n, JSON_INVALID_UTF8_IGNORE | JSON_OBJECT_AS_ARRAY);
-        var_dump($payload['images_alt'], json_encode($n, JSON_INVALID_UTF8_IGNORE | JSON_OBJECT_AS_ARRAY));
+        $images = json_encode($n, JSON_OBJECT_AS_ARRAY);
+        //var_dump($payload['images_alt'], json_encode($n, JSON_INVALID_UTF8_IGNORE | JSON_OBJECT_AS_ARRAY));
 
         $stmt = Database::run($sql_image_up, [$images, $id]);
 

@@ -20,7 +20,7 @@ if (isset($success))
         </div><?php
     }
 }
-if (isset($submit))
+if (isset($submit) and count($submit) > 0)
 {
     list( $id, $name, $fio, $number, $email, $cost, $earn_p_m, $region, $address, $about, $conf) = $submit;
 }
@@ -51,11 +51,11 @@ if (isset($submit))
         </div>
     </div>
     <div class="form-group form-check">
-        <input name="conf"  type="checkbox" class="form-check-input" id="conf" <?php if ($conf == 1) echo 'checked'?>
+        <input name="conf"  type="checkbox" class="form-check-input" id="conf" <?php if (isset($conf) && $conf == 1) echo 'checked'?>
         <label class="form-check-label" for="conf">Конфидециально</label>
     </div>
     <div class="form-group form-check">
-        <input name="part"  type="checkbox" class="form-check-input" id="part" <?php if ($part == 1) echo 'checked'?>
+        <input name="part"  type="checkbox" class="form-check-input" id="part" <?php if (isset($part) && $part == 1) echo 'checked'?>
         <label class="form-check-label" for="part">Продается доля в бизнесе</label>
     </div>
 
