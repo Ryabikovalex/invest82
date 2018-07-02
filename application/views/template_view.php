@@ -47,7 +47,7 @@
 <body>
 <div id="wrapper" class="container-fluid  h-auto" style="padding: 0;">
 	<header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary text-white h4">
             <a class="navbar-brand" href="/">Invest82.ru</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

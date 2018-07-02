@@ -9,6 +9,7 @@ $site = $protocol.$domain;
 $map_last_mod = date('c');
 $data_last_mod = strrev(substr(strrev($map_last_mod), -10));
 
+$all_limit = 10000;
 $chunk_limit = 50000;
 $sitemap_chunks = [
     ''
@@ -135,7 +136,7 @@ while ( $c  > 0)
 {
     $map = fopen('sitemap'.$start.'.xml', 'w+');
     fwrite($map, '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL.'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL);
-    for ($i = 0; $i < $chunk_limit and $c > 0; $i++, $c--)
+    for ($i = 0; $i < $all_limit and $i < $chunk_limit and $c > 0; $i++, $c--)
     {
         $entry = $sitemap[$i];
         fwrite($map, '    <url>

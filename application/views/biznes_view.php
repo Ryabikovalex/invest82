@@ -74,6 +74,6 @@ $images = json_decode($images, true, 512, JSON_OBJECT_AS_ARRAY);
     </p>
     <div class="alert alert-info" role="alert">
         <h4 class="alert-heading">Брокер объекта: <?=$brName?></h4>
-        <p>Свяжитесь со мной <?=format_tel($brTel)?> и я проконсультирую вас по любым вопросам относительно покупки этого бизнеса. </p>
+        <p>Свяжитесь со мной <b><?=format_tel($brTel)?></b> и я проконсультирую вас по любым вопросам относительно покупки этого бизнеса. </p>
     </div>
 </div>

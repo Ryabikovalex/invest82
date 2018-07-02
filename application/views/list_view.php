@@ -70,12 +70,12 @@ if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
                  <?php echo ($conf == 1) ? '<span class="badge badge-danger" style="font-size: 85%;">Конфидециально</span>' : ''?>
                  <?php echo ($status == 0) ? '<span class="badge badge-success " style="font-size: 85%;">Новинка</span>' : ''?>
              </p>
-             <a href="/catalog/biznes/i/<?=$id?>"><h3 class="card-title h5"><?=$name?></h3></a>
+             <a href="/catalog/biznes/i/<?=$id?>"><p class="card-title h5"><?=$name?></p></a>
              <p class="card-text" >
                  Стоимость : <?=format_cost($cost)?> руб.<br/>
                  Прибыль : <?=format_cost($earn)?> руб.<br/>
                  Добавлен : <?=format_date($added)?> <br/>
-                 Город : <?=$cityName?>
+                 Нас. пункт : <?=$cityName?>
              </p>
          </div>
      </div>
