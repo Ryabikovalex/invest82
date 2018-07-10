@@ -3,7 +3,8 @@ class model_form extends model{
 
     public function submit_biznes ( $payload)
     {
-        $sql_add = 'INSERT INTO `customers`(`fio`, `number`, `email`, `is_sell`) VALUES ( ?, ?, "", 1) ON DUPLICATE KEY UPDATE `is_sell`=1, `number`=?';
+        $sql_add = 'INSERT INTO `customers`(`fio`, `number`, `email`, `is_sell`, `required_broker`) VALUES ( ?, ?, "", 1, 0) ON DUPLICATE KEY UPDATE `is_sell`=1, `number`=?';
+        $sql_add_b = 'INSERT INTO `customers`(`fio`, `number`, `email`, `is_sell`, `required_broker`) VALUES ( ?, ?, "", 1, 1) ON DUPLICATE KEY UPDATE `is_sell`=1, `number`=?';
         if ( count($payload) > 3)
         {
             $sql_find = 'SELECT `id` FROM `customers` WHERE `fio`=?';
@@ -24,7 +25,7 @@ class model_form extends model{
 
             $stmt = Database::run($sql1, [ $payload['name'], $customer_id, $payload['cost'], $payload['earn_p_m'], $payload['region'], $payload['address'], $payload['about'], $is_conf ]);
         }else{
-            $stmt = Database::run($sql_add, [$payload['fio'], $payload['number'], $payload['number']] );
+            $stmt = Database::run($sql_add_b, [$payload['fio'], $payload['number'], $payload['number']] );
         }
         return $stmt;
     }

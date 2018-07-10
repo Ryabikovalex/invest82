@@ -1,3 +1,8 @@
+<div>
+    <h2><?=$content['text1']['h']?></h2>
+    <p><?=$content['text1']['c']?></p>
+</div>
+
 <form name="filter" action="">
 <span class="btn btn-link" id="remove-cat">Сбросить категории</span>
 <div id="cat-container">
@@ -57,8 +62,9 @@ if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
 
 <div class="row justify-content-center">
  <?php if ( !is_array($items) or count($items) == 0){?>
-    <p class="h4">Ничего не найдено</p>
-<?php }else{  foreach ( $items as $k => $param){
+     <p class="h5">Не нашли то что искали?</p>
+     <p class="h5">Заполните <a rel="nofollow" href="https://goo.gl/forms/5ScQo0JIWEVVlsNG2">форму</a> и менеджер подберет для вас список подходящих бизнесов</p>
+ <?php }else{  foreach ( $items as $k => $param){
     list($id, $name, $added, $cost, , , $status, $images, $conf,  $cityName, $cityTranslit, , $regTranslit, , $subcatTranslit, , , $catTranslit, $earn, $is_part) = $param;
     $image = json_decode($images, true)[0];
 ?>
@@ -85,3 +91,8 @@ if(isset(Route::$arg['region']) and count(Route::$arg['region']) == 1)
 <div>
 </div>
 <script src="<?=PATH['js'].'filters.js'?>"></script>
+
+<div>
+    <h2><?=$content['text2']['h']?></h2>
+    <p><?=$content['text2']['c']?></p>
+</div>
