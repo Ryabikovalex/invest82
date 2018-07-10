@@ -38,12 +38,12 @@ class model
         $result['subcat_active_count'] = Database::run('SELECT COUNT(*) FROM `categories` WHERE `parent`!=0 AND `is_enabled`=1')->fetch(PDO::FETCH_NUM)[0];
         $result['subcat_count'] = Database::run('SELECT COUNT(*) FROM `categories` WHERE `parent`!=0')->fetch(PDO::FETCH_NUM)[0];
         $result['products_count'] = Database::run('SELECT COUNT(*) FROM `products`')->fetch(PDO::FETCH_NUM)[0];
-        $result['reports_count'] = 0;
-        $result['submit_buyers_count'] = Database::run('SELECT COUNT(*) FROM `submit_buyers`')->fetch(PDO::FETCH_NUM)[0];
+         $result['submit_buyers_count'] = Database::run('SELECT COUNT(*) FROM `submit_buyers`')->fetch(PDO::FETCH_NUM)[0];
         $result['submit_products_count'] = Database::run('SELECT COUNT(*) FROM `submit_products`')->fetch(PDO::FETCH_NUM)[0];
         $result['brokers_count'] = Database::run('SELECT COUNT(*) FROM `brokers`')->fetch(PDO::FETCH_NUM)[0];
-        $result['buyers_count'] = Database::run('SELECT COUNT(*) FROM `buyers`')->fetch(PDO::FETCH_NUM)[0];/////////////////
-        $result['customers_count'] = Database::run('SELECT COUNT(*) FROM `customers`')->fetch(PDO::FETCH_NUM)[0];///////////
+        $result['buyers_count'] = Database::run('SELECT COUNT(*) FROM `customers` WHERE  `is_buy`=1')->fetch(PDO::FETCH_NUM)[0];/////////////////
+        $result['customers_count'] = Database::run('SELECT COUNT(*) FROM `customers`WHERE `is_sell`=1 AND `required_broker`=0')->fetch(PDO::FETCH_NUM)[0];///////////
+        $result['customers_brokers_count'] = Database::run('SELECT COUNT(*) FROM `customers`WHERE `is_sell`=1 AND `required_broker`=1')->fetch(PDO::FETCH_NUM)[0];///////////
         return $result;
     }
 

@@ -108,4 +108,22 @@ class model_submit extends model{
         // Database::run('DELETE FROM `submit_products` WHERE `id`=?', [$payload['id']]);
         return $result;
     }
+
+    public function public_text ($p)
+    {
+        $sql_f = 'SELECT `id` FROM `semantic_text` WHERE `cat`=? AND `subcat`=?';
+        $sql_i = 'INSERT INTO `semantic_text`(`region`, `cat`, `text1`,`text2`) VALUE ( ?, ?, ?, ?)';
+        $sql_u = 'UPDATE `semantic_text` SET `text1`=?, `text2`=? WHERE `id`=?';
+
+        $f = Database::run($sql_f, [$p['cat'], $p['region']])->fetch(PDO::FETCH_NUM);
+        if ( $f > 0)
+        {
+            $result = Database::run($sql_u, [$p['text1'], $p['text2'], $f]);
+        }else
+        {
+            $result = Database::run($sql_i, [ $p['region'], $p['cat'], $p['text1'], $p['text2'] ]);
+        }
+
+        return $result;
+    }
 }

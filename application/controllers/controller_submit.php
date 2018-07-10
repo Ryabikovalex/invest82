@@ -42,6 +42,25 @@ class controller_submit extends controller{
         View::generate('new_product_view.php', $data);
     }
 
+    public function action_text()
+    {
+        if( count($_POST) > 0)
+        {
+            $arr = [];
+            foreach ( $_POST as $k =>$v)
+            {
+                $arr[$k] = trim(htmlspecialchars($v));
+            }
+            $arr['text1'] = json_encode([ 'h' => $arr['h1'], 'c'=> $arr['text1']], JSON_INVALID_UTF8_IGNORE);
+            $arr['text2'] = json_encode([ 'h' => $arr['h2'], 'c'=> $arr['text2']], JSON_INVALID_UTF8_IGNORE);
+
+            $data['success'] = $this->model->public_text($arr);
+        }
+        $data['header'] = 'Задаит уникальные тексты';
+        $data['stat'] = $this->model->collect_statistic();
+        View::generate('new_text_view.php', $data);
+    }
+
     public function action_region()
     {
 
